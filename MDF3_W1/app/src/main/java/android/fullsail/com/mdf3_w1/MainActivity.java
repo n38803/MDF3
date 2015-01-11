@@ -1,8 +1,6 @@
 package android.fullsail.com.mdf3_w1;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,8 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class MainActivity extends Activity implements MediaPlayer.OnPreparedListener {
@@ -22,6 +22,9 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
     boolean mActivityResumed;
     boolean mPrepared;
     int mAudioPosition;
+    int songPosition;
+
+
 
 
     @Override
@@ -36,18 +39,22 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
 
 
 
+
+
         if(savedInstanceState != null && savedInstanceState.containsKey(SAVE_POSITION)) {
             mAudioPosition = savedInstanceState.getInt(SAVE_POSITION, 0);
         }
 
 
-
+        // Assign button references
         Button play = (Button)findViewById(R.id.play);
         Button stop = (Button)findViewById(R.id.stop);
-        Button resume = (Button)findViewById(R.id.resume);
         Button pause = (Button)findViewById(R.id.pause);
+        Button next = (Button)findViewById(R.id.next);
+        Button previous = (Button)findViewById(R.id.previous);
 
 
+        // create onClickListeners for each button w/execution of corresponding methods
         play.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
@@ -64,14 +71,6 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
                 }
         );
 
-        resume.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        onResume();
-                    }
-                }
-        );
-
         pause.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
@@ -80,6 +79,38 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
                 }
         );
 
+        next.setOnClickListener(
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        if(songPosition < 3)
+                        {
+                            songPosition++;
+                            onStart();
+
+                        }
+
+
+
+                    }
+                }
+        );
+
+        previous.setOnClickListener(
+                new Button.OnClickListener() {
+                    public void onClick(View v) {
+                        if(songPosition > 0)
+                        {
+                            songPosition--;
+                            onStart();
+                        }
+
+                    }
+                }
+        );
+
+
+
+
 
 
 
@@ -88,25 +119,51 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
 
     }
 
-    void onClick() {
-
-
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if(mPlayer == null) {
-            // Easy way: mPlayer = MediaPlayer.create(this, R.raw.something_elated);
-            // Easy way doesn't require a call to prepare or prepareAsync. Only works for resources.
+        Song track1 = new Song(
+                "Ghost of the Machine",
+                "Dragons Make Bad Babysitters",
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons)
+        );
 
+        Song track2 = new Song(
+                "Ghost of the Machine",
+                "On Letting Go",
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo)
+        );
+
+        Song track3 = new Song(
+                "Ghost of the Machine",
+                "Baby, There's No Escape Cuz' I Sold the Exit Door",
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby)
+        );
+
+        Song track4 = new Song(
+                "Ghost of the Machine",
+                "She's Not Dancing, She's Dying!",
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing)
+        );
+
+
+        Song songs[] = {track1, track2, track3, track4};
+
+        // Assign textviews
+        TextView band = (TextView)findViewById(R.id.bandName);
+        TextView song = (TextView)findViewById(R.id.songName);
+
+
+        if(mPlayer == null) {
+            // assign & initiate media player
             mPlayer = new MediaPlayer();
-            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.setOnPreparedListener(this);
+            songPosition = 0;
 
             try {
-                mPlayer.setDataSource(this, Uri.parse("android.resource://" + getPackageName() + "/raw/gotmbaby"));
+                mPlayer.setDataSource(this, Uri.parse(songs[songPosition].getTrack()));
             } catch(IOException e) {
                 e.printStackTrace();
 
@@ -114,6 +171,19 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
                 mPlayer = null;
             }
         }
+
+        if (mPlayer != null){
+            onResume();
+        }
+
+
+
+        band.setText(songs[songPosition].getArtist());
+        song.setText(songs[songPosition].getSong());
+
+
+
+
     }
 
     @Override
@@ -144,6 +214,7 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
 
         if(mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.pause();
+            mAudioPosition = mPlayer.getCurrentPosition();
         }
     }
 
@@ -152,6 +223,7 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
         super.onStop();
 
         if(mPlayer != null && mPlayer.isPlaying()) {
+            mAudioPosition = 0;
             mPlayer.stop();
             mPrepared = false;
         }

@@ -11,7 +11,8 @@
     android:weightSum="1">
 
     <TextView
-        android:text="@string/band_name"
+        android:hint="Band Name Goes Here"
+        android:id="@+id/bandName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12pt"
@@ -20,43 +21,42 @@
 
     <TextView
         android:hint="Song Name Goes Here"
+        android:id="@+id/songName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight=".2"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
         android:text="Next Song"
         android:layout_gravity="center"
-        android:id="@+id/next"/>
+        android:id="@+id/next"
+        android:enabled="true" />
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:text="Play"
             android:id="@+id/play"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:text="Pause"
             android:id="@+id/pause"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Resume"
-            android:id="@+id/resume"/>
+
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
             android:text="Stop"
             android:id="@+id/stop"/>
@@ -65,10 +65,11 @@
         </LinearLayout>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="225dp"
         android:layout_height="wrap_content"
         android:text="Previous Song"
         android:layout_gravity="center"
-        android:id="@+id/previous"/>
+        android:id="@+id/previous"
+        android:enabled="false" />
 
 </LinearLayout>
