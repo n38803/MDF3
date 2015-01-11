@@ -195,7 +195,7 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
         else if (mPlayer != null && mIdle == true){
             try {
                 mPlayer.setDataSource(this, Uri.parse(songs[songPosition].getTrack()));
-                Log.i("Initiating After Reset", "Track: " + songPosition + " / IDLE: " + mIdle);
+                mIdle = false;
                 onResume();
             } catch(IOException e) {
                 e.printStackTrace();
@@ -228,6 +228,7 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
 
 
         mActivityResumed = true;
+
 
         if(mPlayer != null && !mPrepared) {
             Log.i("Preparing", "Track: " + songPosition);
