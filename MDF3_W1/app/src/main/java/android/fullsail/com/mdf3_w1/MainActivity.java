@@ -1,9 +1,11 @@
 package android.fullsail.com.mdf3_w1;
 
 import android.app.Activity;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +25,7 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
     boolean mPrepared;
     int mAudioPosition;
     int songPosition;
+    boolean mIdle;
 
 
 
@@ -38,7 +41,10 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
 
 
 
-
+        mPrepared = mActivityResumed = false;
+        mAudioPosition = 0;
+        songPosition = 0;
+        mIdle = true;
 
 
         if(savedInstanceState != null && savedInstanceState.containsKey(SAVE_POSITION)) {
@@ -71,6 +77,7 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
                 }
         );
 
+
         pause.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
@@ -84,6 +91,7 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
                     public void onClick(View v) {
                         if(songPosition < 3)
                         {
+                            onReset();
                             songPosition++;
                             onStart();
 
@@ -100,6 +108,7 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
                     public void onClick(View v) {
                         if(songPosition > 0)
                         {
+                            onReset();
                             songPosition--;
                             onStart();
                         }
@@ -159,29 +168,48 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
         if(mPlayer == null) {
             // assign & initiate media player
             mPlayer = new MediaPlayer();
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.setOnPreparedListener(this);
             songPosition = 0;
+            mIdle = false;
 
             try {
                 mPlayer.setDataSource(this, Uri.parse(songs[songPosition].getTrack()));
+                mIdle = false;
+                Log.i("Initiating", "Track: " + songPosition);
             } catch(IOException e) {
                 e.printStackTrace();
-
+                Log.e("ERROR!", "--PLAYER RELEASED");
                 mPlayer.release();
                 mPlayer = null;
             }
         }
 
-        if (mPlayer != null){
+        else if (mPlayer != null && mIdle != true)
+        {
+            Log.i("RESUMING", "Idle: " + mIdle);
             onResume();
+
         }
+
+        else if (mPlayer != null && mIdle == true){
+            try {
+                mPlayer.setDataSource(this, Uri.parse(songs[songPosition].getTrack()));
+                Log.i("Initiating After Reset", "Track: " + songPosition + " / IDLE: " + mIdle);
+                onResume();
+            } catch(IOException e) {
+                e.printStackTrace();
+                Log.e("ERROR!", "--PLAYER RELEASED");
+                mPlayer.release();
+                mPlayer = null;
+            }
+        }
+
 
 
 
         band.setText(songs[songPosition].getArtist());
         song.setText(songs[songPosition].getSong());
-
-
 
 
     }
@@ -198,10 +226,14 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
     protected void onResume() {
         super.onResume();
 
+
         mActivityResumed = true;
+
         if(mPlayer != null && !mPrepared) {
+            Log.i("Preparing", "Track: " + songPosition);
             mPlayer.prepareAsync();
         } else if(mPlayer != null && mPrepared) {
+            Log.i("Resuming", "Track: " + songPosition);
             mPlayer.seekTo(mAudioPosition);
             mPlayer.start();
         }
@@ -223,9 +255,11 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
         super.onStop();
 
         if(mPlayer != null && mPlayer.isPlaying()) {
-            mAudioPosition = 0;
+            Log.e("MusicPlayer", "Stopped");
             mPlayer.stop();
             mPrepared = false;
+            mAudioPosition = 0;
+
         }
     }
 
@@ -238,14 +272,29 @@ public class MainActivity extends Activity implements MediaPlayer.OnPreparedList
         }
     }
 
+    protected void onReset() {
+        if(mPlayer != null) {
+
+            Log.e("MusicPlayer", "RESET");
+            mAudioPosition = 0;
+            mPlayer.reset();
+            mPrepared = false;
+            mIdle = true;
+
+
+        }
+    }
+
     @Override
     public void onPrepared(MediaPlayer mp) {
         mPrepared = true;
 
         if(mPlayer != null && mActivityResumed) {
+
             mPlayer.seekTo(mAudioPosition);
             mPlayer.start();
         }
+
     }
 
     @Override

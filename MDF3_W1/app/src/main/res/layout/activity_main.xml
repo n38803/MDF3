@@ -53,6 +53,12 @@
             android:text="Pause"
             android:id="@+id/pause"/>
 
+        Button
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text="Resume"
+            android:id="@+id/resume"/>
+
 
 
         <Button
@@ -70,6 +76,6 @@
         android:text="Previous Song"
         android:layout_gravity="center"
         android:id="@+id/previous"
-        android:enabled="false" />
+        android:enabled="true" />
 
 </LinearLayout>
