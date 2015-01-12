@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,11 +43,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     int mAudioPosition;
     int songPosition;
     boolean mIdle;
-    View v;
+
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+
+
+
 
 
     }
@@ -60,37 +65,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Song track1 = new Song(
-                "Ghost of the Machine",
-                "Dragons Make Bad Babysitters",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons)
-        );
-
-        Song track2 = new Song(
-                "Ghost of the Machine",
-                "On Letting Go",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo)
-        );
-
-        Song track3 = new Song(
-                "Ghost of the Machine",
-                "Baby, There's No Escape Cuz' I Sold the Exit Door",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby)
-        );
-
-        Song track4 = new Song(
-                "Ghost of the Machine",
-                "She's Not Dancing, She's Dying!",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing)
-        );
+            Log.e("SERVICES", "Started");
+            onPlay();
 
 
-        Song songs[] = {track1, track2, track3, track4};
 
-        // Assign textviews
-        TextView band = (TextView) v.getRootView().findViewById(R.id.bandName);
-        TextView song = (TextView) v.getRootView().findViewById(R.id.songName);
+        return Service.START_STICKY;
+    }
+
+    protected void onPlay() {
 
 
         if(mPlayer == null) {
@@ -138,9 +121,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         band.setText(songs[songPosition].getArtist());
         song.setText(songs[songPosition].getSong());
-
-
-        return Service.START_NOT_STICKY;
     }
 
     protected void onResume() {
