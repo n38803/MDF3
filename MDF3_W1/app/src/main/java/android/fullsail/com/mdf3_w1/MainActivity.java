@@ -24,7 +24,7 @@ import android.support.v4.app.NotificationCompat;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import android.fullsail.com.mdf3_w1.MusicService.BoundServiceBinder;
+import android.fullsail.com.mdf3_w1.MusicService.LocalBinder;
 
 
 public class MainActivity extends Activity implements ServiceConnection {
@@ -33,9 +33,9 @@ public class MainActivity extends Activity implements ServiceConnection {
 
     boolean mBound;
     MusicService mService;
-    private MusicService mBoundService;
-    Context context;
 
+    public String bandName;
+    public String songName;
 
 
 
@@ -51,23 +51,15 @@ public class MainActivity extends Activity implements ServiceConnection {
         bindService(intent, this, Context.BIND_AUTO_CREATE);
 
 
-
-
-
-        // Assign textviews
-        TextView band = (TextView) findViewById(R.id.bandName);
-        TextView song = (TextView) findViewById(R.id.songName);
-
-
-
-
-
-
-
-
-
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Bind to LocalService
+        Intent intent = new Intent(this, MusicService.class);
+        bindService(intent, this, Context.BIND_AUTO_CREATE);
+    }
 
 
     @Override
@@ -94,6 +86,26 @@ public class MainActivity extends Activity implements ServiceConnection {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
 
+        Log.i("BIND", "CONNECTED");
+
+        LocalBinder binder = (LocalBinder )service;
+        mService = binder.getService();
+        mBound = true;
+
+        // Assign textviews
+        final TextView band = (TextView) findViewById(R.id.bandName);
+        final TextView song = (TextView) findViewById(R.id.songName);
+
+        bandName = mService.getBand();
+        songName = mService.getSong();
+
+        band.setText(bandName);
+        song.setText(songName);
+
+
+
+
+
         NotificationManager mgr =
                 (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -101,12 +113,11 @@ public class MainActivity extends Activity implements ServiceConnection {
         builder.setSmallIcon(R.drawable.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(
                 getResources(), R.drawable.ic_launcher));
-        builder.setContentTitle("Standard Title");
-        builder.setContentText("Standard Message");
+        builder.setContentTitle("NOW PLAYING: ");
+        builder.setContentText(bandName + " - " + songName);
         mgr.notify(STANDARD_NOTIFICATION, builder.build());
 
-        BoundServiceBinder binder = (BoundServiceBinder)service;
-        final MusicService myService = binder.getService();
+
 
         // Assign button references
         Button play = (Button) findViewById(R.id.play);
@@ -115,11 +126,16 @@ public class MainActivity extends Activity implements ServiceConnection {
         Button next = (Button) findViewById(R.id.next);
         Button previous = (Button) findViewById(R.id.previous);
 
+
+
+
         // create onClickListeners for each button w/execution of corresponding methods
         play.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        myService.onPlay();
+                        mService.onPlay();
+                        band.setText(bandName);
+                        song.setText(songName);
                     }
                 }
         );
@@ -127,7 +143,9 @@ public class MainActivity extends Activity implements ServiceConnection {
         stop.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        myService.onStop();
+                        mService.onStop();
+                        band.setText(bandName);
+                        song.setText(songName);
                     }
                 }
         );
@@ -136,7 +154,9 @@ public class MainActivity extends Activity implements ServiceConnection {
         pause.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        myService.onPause();
+                        mService.onPause();
+                        band.setText(bandName);
+                        song.setText(songName);
                     }
                 }
         );
@@ -144,7 +164,9 @@ public class MainActivity extends Activity implements ServiceConnection {
         next.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                       myService.onNext();
+                        mService.onNext();
+                        band.setText(bandName);
+                        song.setText(songName);
 
 
                     }
@@ -154,7 +176,9 @@ public class MainActivity extends Activity implements ServiceConnection {
         previous.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                       myService.onPrevious();
+                        mService.onPrevious();
+                        band.setText(bandName);
+                        song.setText(songName);
                     }
                 }
         );
@@ -165,6 +189,9 @@ public class MainActivity extends Activity implements ServiceConnection {
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
+
+        mService = null;
+        mBound = false;
 
     }
 }

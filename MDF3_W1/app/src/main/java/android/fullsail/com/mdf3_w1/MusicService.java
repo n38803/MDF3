@@ -46,14 +46,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     int mAudioPosition;
     int songPosition;
     boolean mIdle;
-    BoundServiceBinder mBinder;
+    public String band;
+    public String song;
+    IBinder mBinder = new LocalBinder();
 
     public static final int STANDARD_NOTIFICATION = 0x01001;
 
 
 
 
-    public class BoundServiceBinder extends Binder {
+    public class LocalBinder extends Binder {
         public MusicService getService() {
             return MusicService.this;
         }
@@ -84,7 +86,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
-        return Service.START_STICKY;
+        return Service.START_NOT_STICKY;
     }
 
     protected void onPlay() {
@@ -165,8 +167,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
-        //band.setText(songs[songPosition].getArtist());
-        //song.setText(songs[songPosition].getSong());
+        band = (songs[songPosition].getArtist());
+        song = (songs[songPosition].getSong());
     }
 
     protected void onResume() {
@@ -225,7 +227,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     protected void onPrevious() {
-        if(songPosition > 11)
+        if(songPosition > 0)
         {
             onReset();
             songPosition--;
@@ -245,6 +247,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
         }
+    }
+
+    public String getBand () {
+
+
+        return band;
+    }
+
+    public String getSong () {
+
+
+        return song;
     }
 
     @Override
@@ -275,3 +289,4 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 }
+
