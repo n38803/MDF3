@@ -1,11 +1,13 @@
 package android.fullsail.com.mdf3_w1;
 
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import java.io.IOException;
 
@@ -43,6 +46,20 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     int mAudioPosition;
     int songPosition;
     boolean mIdle;
+    BoundServiceBinder mBinder;
+
+    public static final int STANDARD_NOTIFICATION = 0x01001;
+
+
+
+
+    public class BoundServiceBinder extends Binder {
+        public MusicService getService() {
+            return MusicService.this;
+        }
+    }
+
+
 
 
     @Override
@@ -54,13 +71,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
+
+
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        // Don't allow binding.
-        return null;
-    }
 
 
     @Override
@@ -76,6 +90,35 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     protected void onPlay() {
 
 
+        Song track1 = new Song(
+                "Ghost of the Machine",
+                "Dragons Make Bad Babysitters",
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons)
+        );
+
+        Song track2 = new Song(
+                "Ghost of the Machine",
+                "On Letting Go",
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo)
+        );
+
+        Song track3 = new Song(
+                "Ghost of the Machine",
+                "Baby, There's No Escape Cuz' I Sold the Exit Door",
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby)
+        );
+
+        Song track4 = new Song(
+                "Ghost of the Machine",
+                "She's Not Dancing, She's Dying!",
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing)
+        );
+
+
+
+        Song songs[] = {track1, track2, track3, track4};
+
+
         if(mPlayer == null) {
             // assign & initiate media player
             mPlayer = new MediaPlayer();
@@ -88,6 +131,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                 mPlayer.setDataSource(this, Uri.parse(songs[songPosition].getTrack()));
                 mIdle = false;
                 Log.i("Initiating", "Track: " + songPosition);
+                onResume();
             } catch(IOException e) {
                 e.printStackTrace();
                 Log.e("ERROR!", "--PLAYER RELEASED");
@@ -119,8 +163,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
-        band.setText(songs[songPosition].getArtist());
-        song.setText(songs[songPosition].getSong());
+
+
+        //band.setText(songs[songPosition].getArtist());
+        //song.setText(songs[songPosition].getSong());
     }
 
     protected void onResume() {
@@ -168,6 +214,26 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
+    protected void onNext() {
+        if(songPosition < 3)
+            {
+                onReset();
+                songPosition++;
+                onPlay();
+
+            }
+    }
+
+    protected void onPrevious() {
+        if(songPosition > 11)
+        {
+            onReset();
+            songPosition--;
+            onPlay();
+
+        }
+    }
+
     protected void onReset() {
         if(mPlayer != null) {
 
@@ -181,7 +247,22 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
 
+
+
+        return super.onUnbind(intent);
+    }
+
+
+    @Override
+    public IBinder onBind(Intent intent) {
+
+
+
+        return mBinder;
+    }
 
     @Override
     public void onPrepared(MediaPlayer mp) {
