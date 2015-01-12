@@ -53,14 +53,8 @@ public class MainActivity extends Activity implements ServiceConnection {
         bindService(intent, this, Context.BIND_AUTO_CREATE);
 
 
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Bind to LocalService
-        Intent intent = new Intent(this, MusicService.class);
-        bindService(intent, this, Context.BIND_AUTO_CREATE);
+
     }
 
 
@@ -104,23 +98,32 @@ public class MainActivity extends Activity implements ServiceConnection {
 
 
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent mainIntent = new Intent(this, MainActivity.class);
+
+        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, 0);
+
 
 
         final NotificationManager mgr =
                 (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+
             builder.setSmallIcon(R.drawable.ic_stat_av_my_library_music);
             builder.setLargeIcon(BitmapFactory.decodeResource(
                 getResources(), R.drawable.ic_stat_av_my_library_music));
             builder.setContentTitle(mService.getBand());
             builder.setContentText(mService.getSong());
+            builder.setContentIntent(pIntent);
 
         mgr.notify(STANDARD_NOTIFICATION, builder.build());
 
-        PendingIntent pIntent = PendingIntent.getActivity(this, REQUEST_NOTIFY_LAUNCH, intent, 0);
-        builder.setContentIntent(pIntent);
+
+
+
+
+
+
 
 
 

@@ -89,7 +89,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
-        return Service.START_NOT_STICKY;
+        return Service.START_STICKY;
     }
 
     protected void onPlay() {
@@ -129,6 +129,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             mPlayer = new MediaPlayer();
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.setOnPreparedListener(this);
+            mPlayer.setOnCompletionListener(this);
             songPosition = 0;
             mIdle = false;
 
@@ -294,7 +295,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onCompletion(MediaPlayer mp) {
+
         onNext();
+        getBand();
+        getSong();
     }
 }
 
