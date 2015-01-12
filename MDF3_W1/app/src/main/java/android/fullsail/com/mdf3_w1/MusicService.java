@@ -1,15 +1,18 @@
 package android.fullsail.com.mdf3_w1;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +27,7 @@ import java.io.IOException;
 /**
  * Created by Shaun on 1/11/2015.
  */
-public class MusicService extends Service implements MediaPlayer.OnPreparedListener {
+public class MusicService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
 
         /*
         // MEDIA STATES
@@ -280,13 +283,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mPrepared = true;
+    mPrepared = true;
 
-        if(mPlayer != null && mActivityResumed) {
+    if(mPlayer != null && mActivityResumed) {
 
-            mPlayer.seekTo(mAudioPosition);
-            mPlayer.start();
-        }
+        mPlayer.seekTo(mAudioPosition);
+        mPlayer.start();
+    }
+}
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        onNext();
     }
 }
 

@@ -2,6 +2,7 @@ package android.fullsail.com.mdf3_w1;
 
 import android.app.Activity;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -30,12 +31,13 @@ import android.fullsail.com.mdf3_w1.MusicService.LocalBinder;
 public class MainActivity extends Activity implements ServiceConnection {
 
     public static final int STANDARD_NOTIFICATION = 0x01001;
+    private static final int REQUEST_NOTIFY_LAUNCH = 0x02001;
+
+
 
     boolean mBound;
     MusicService mService;
 
-    public String bandName;
-    public String songName;
 
 
 
@@ -46,7 +48,7 @@ public class MainActivity extends Activity implements ServiceConnection {
 
 
 
-        final Intent intent = new Intent(this, MusicService.class);
+        Intent intent = new Intent(this, MusicService.class);
         startService(intent);
         bindService(intent, this, Context.BIND_AUTO_CREATE);
 
@@ -82,11 +84,12 @@ public class MainActivity extends Activity implements ServiceConnection {
     }
 
 
-
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
 
         Log.i("BIND", "CONNECTED");
+
+
 
         LocalBinder binder = (LocalBinder )service;
         mService = binder.getService();
@@ -96,26 +99,30 @@ public class MainActivity extends Activity implements ServiceConnection {
         final TextView band = (TextView) findViewById(R.id.bandName);
         final TextView song = (TextView) findViewById(R.id.songName);
 
-        bandName = mService.getBand();
-        songName = mService.getSong();
-
-        band.setText(bandName);
-        song.setText(songName);
+        band.setText(mService.getBand());
+        song.setText(mService.getSong());
 
 
 
+        Intent intent = new Intent(this, MainActivity.class);
 
 
-        NotificationManager mgr =
+        final NotificationManager mgr =
                 (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.drawable.ic_launcher);
-        builder.setLargeIcon(BitmapFactory.decodeResource(
-                getResources(), R.drawable.ic_launcher));
-        builder.setContentTitle("NOW PLAYING: ");
-        builder.setContentText(bandName + " - " + songName);
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+            builder.setSmallIcon(R.drawable.ic_stat_av_my_library_music);
+            builder.setLargeIcon(BitmapFactory.decodeResource(
+                getResources(), R.drawable.ic_stat_av_my_library_music));
+            builder.setContentTitle(mService.getBand());
+            builder.setContentText(mService.getSong());
+
         mgr.notify(STANDARD_NOTIFICATION, builder.build());
+
+        PendingIntent pIntent = PendingIntent.getActivity(this, REQUEST_NOTIFY_LAUNCH, intent, 0);
+        builder.setContentIntent(pIntent);
+
+
 
 
 
@@ -134,8 +141,13 @@ public class MainActivity extends Activity implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onPlay();
-                        band.setText(bandName);
-                        song.setText(songName);
+                        band.setText(mService.getBand());
+                        song.setText(mService.getSong());
+                            mgr.cancel(STANDARD_NOTIFICATION);
+                            builder.setContentTitle(mService.getBand());
+                            builder.setContentText(mService.getSong());
+                            mgr.notify(STANDARD_NOTIFICATION, builder.build());
+
                     }
                 }
         );
@@ -144,8 +156,10 @@ public class MainActivity extends Activity implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onStop();
-                        band.setText(bandName);
-                        song.setText(songName);
+                        band.setText(mService.getBand());
+                        song.setText(mService.getSong());
+                            mgr.cancel(STANDARD_NOTIFICATION);
+
                     }
                 }
         );
@@ -155,8 +169,10 @@ public class MainActivity extends Activity implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onPause();
-                        band.setText(bandName);
-                        song.setText(songName);
+                        band.setText(mService.getBand());
+                        song.setText(mService.getSong());
+                            mgr.cancel(STANDARD_NOTIFICATION);
+
                     }
                 }
         );
@@ -165,9 +181,12 @@ public class MainActivity extends Activity implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onNext();
-                        band.setText(bandName);
-                        song.setText(songName);
-
+                        band.setText(mService.getBand());
+                        song.setText(mService.getSong());
+                            mgr.cancel(STANDARD_NOTIFICATION);
+                            builder.setContentTitle(mService.getBand());
+                            builder.setContentText(mService.getSong());
+                            mgr.notify(STANDARD_NOTIFICATION, builder.build());
 
                     }
                 }
@@ -177,8 +196,12 @@ public class MainActivity extends Activity implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onPrevious();
-                        band.setText(bandName);
-                        song.setText(songName);
+                        band.setText(mService.getBand());
+                        song.setText(mService.getSong());
+                            mgr.cancel(STANDARD_NOTIFICATION);
+                            builder.setContentTitle(mService.getBand());
+                            builder.setContentText(mService.getSong());
+                            mgr.notify(STANDARD_NOTIFICATION, builder.build());
                     }
                 }
         );
