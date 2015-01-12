@@ -3,21 +3,24 @@ package android.fullsail.com.mdf3_w1;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
 /**
  * Created by Shaun on 1/11/2015.
  */
-public class MusicService extends Service implements MediaPlayer.OnPreparedListener {
-
-    Context context;
-    // URI grabs
-    String way1 = "android.resource://" + getPackageName() + "/raw/gotmlettinggo";
-    String way2 = "android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo;
+public class MusicService extends Service  {
 
         /*
         // MEDIA STATES
@@ -31,52 +34,30 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
          */
 
-    /*
-    // FROM FS LESSON
+    private static final String SAVE_POSITION = "MainActivity.SAVE_POSITION";
 
-    // Player created, in idle state.
-    MediaPlayer player = new MediaPlayer();
+    MediaPlayer mPlayer;
+    boolean mActivityResumed;
+    boolean mPrepared;
+    int mAudioPosition;
+    int songPosition;
+    boolean mIdle;
+    View v;
 
-// Player initialized, in initialized state.
-    player.setDataSource(this, Uri.parse("android.resource://..."));
-// Setting a prepared listener.
-    player.setOnPreparedListener(new OnPreparedListener() {
-        @Override
-        public void onPrepared(MediaPlayer mp) {
-            // Player prepared!
-            mp.start();
-        }
-    });
-    */
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
 
+    }
 
-    // FROM ANDROID DEVELOPERS
 
-    private static final String ACTION_PLAY = "android.fullsail.com.mdf3_w1.action.PLAY";
-    MediaPlayer mMediaPlayer = null;
-
+    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent.getAction().equals(ACTION_PLAY)) {
-            try {
-                mMediaPlayer.setDataSource(this, Uri.parse(way1));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            mMediaPlayer.setOnPreparedListener((MediaPlayer.OnPreparedListener) this);
-            mMediaPlayer.prepareAsync(); // prepare async to not block main thread
-        }
 
-        // added manually to return 0
-        return 0;
+        return Service.START_NOT_STICKY;
     }
-
-    // Called when MediaPlayer is ready
-    public void onPrepared(MediaPlayer player) {
-        player.start();
-    }
-
 
 
     @Override
