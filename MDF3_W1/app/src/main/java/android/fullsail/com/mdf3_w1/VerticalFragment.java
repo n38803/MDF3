@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -70,9 +72,14 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         // Assign textviews
         final TextView band = (TextView) getActivity().findViewById(R.id.bandName);
         final TextView song = (TextView) getActivity().findViewById(R.id.songName);
+        final ImageView art = (ImageView) getActivity().findViewById(R.id.songArt);
 
         band.setText(mService.getBand());
         song.setText(mService.getSong());
+
+        // TODO - MAKE PHOTO DYNAMIC
+        // TODO - adjust size of photo
+        art.setImageResource(R.drawable.gotmphoto);
 
 
 
@@ -89,7 +96,10 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
 
         builder.setSmallIcon(R.drawable.ic_stat_av_my_library_music);
         builder.setLargeIcon(BitmapFactory.decodeResource(
-                getResources(), R.drawable.ic_stat_av_my_library_music));
+
+        // TODO: MAKE PHOTO DYNAMIC
+
+                getResources(), R.drawable.gotmphoto));
         builder.setContentTitle(mService.getBand());
         builder.setContentText(mService.getSong());
         builder.setContentIntent(pIntent);

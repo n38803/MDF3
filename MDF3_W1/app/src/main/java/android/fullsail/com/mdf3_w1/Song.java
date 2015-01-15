@@ -10,21 +10,21 @@ public class Song {
     private String song;
     private String band;
     private String track;
-    private String art;
+    //private Image art;
 
-    public Song (String songBand, String songName, String songTrack, String songArt) {
+    public Song (String songBand, String songName, String songTrack) {
         song=songName;
         band=songBand;
         track=songTrack;
-        art=songArt;
+       // art=songArt;
 
     }
 
     public String getSong(){return song;}
     public String getArtist(){return band;}
     public String getTrack(){return track;}
-    public String getArt(){
-        return art;
-    }
+   // public Image getArt(){
+       // return art;
+   // }
 
 }

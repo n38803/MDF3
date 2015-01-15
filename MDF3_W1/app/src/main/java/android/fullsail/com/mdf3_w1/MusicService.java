@@ -100,29 +100,25 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Song track1 = new Song(
                 "Ghost of the Machine",
                 "Dragons Make Bad Babysitters",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons),
-                "gotmphoto"
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons)
         );
 
         Song track2 = new Song(
                 "Ghost of the Machine",
                 "On Letting Go",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo),
-                "gotmphoto2"
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo)
         );
 
         Song track3 = new Song(
                 "Ghost of the Machine",
                 "Baby, There's No Escape Cuz' I Sold the Exit Door",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby),
-                "gotmphoto3"
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby)
         );
 
         Song track4 = new Song(
                 "Ghost of the Machine",
                 "She's Not Dancing, She's Dying!",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing),
-                "gotmphoto4"
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing)
         );
 
 
@@ -179,7 +175,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         band = (songs[songPosition].getArtist());
         song = (songs[songPosition].getSong());
-        art = (songs[songPosition].getArt());
+        //art = (songs[songPosition].getArt());
     }
 
     protected void onResume() {
