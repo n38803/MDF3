@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 /**
@@ -28,6 +29,8 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
     public static final String TAG = "VERTICAL";
     public static final int STANDARD_NOTIFICATION = 0x01001;
     boolean mBound;
+
+    int sPosition;
     MusicService mService;
 
 
@@ -64,7 +67,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         Log.i("BIND", "CONNECTED");
 
 
-
+        // setup binder
         MusicService.LocalBinder binder = (MusicService.LocalBinder)service;
         mService = binder.getService();
         mBound = true;
@@ -74,6 +77,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         final TextView song = (TextView) getActivity().findViewById(R.id.songName);
         final ImageView art = (ImageView) getActivity().findViewById(R.id.songArt);
 
+        // assign current song information to views
         band.setText(mService.getBand());
         song.setText(mService.getSong());
 
@@ -82,13 +86,12 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         art.setImageResource(R.drawable.gotmphoto);
 
 
-
+        // set pending intent
         Intent mainIntent = new Intent(VerticalFragment.this.getActivity(), VerticalFragment.class);
-
         PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, mainIntent, 0);
 
 
-
+        // initialize notification & dynamically assign image resources & song info
         final NotificationManager mgr =
                 (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -111,18 +114,51 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
 
 
 
-
-
-
-
-
-
         // Assign button references
         Button play = (Button) getActivity().findViewById(R.id.play);
         Button stop = (Button) getActivity().findViewById(R.id.stop);
         Button pause = (Button) getActivity().findViewById(R.id.pause);
         Button next = (Button) getActivity().findViewById(R.id.next);
         Button previous = (Button) getActivity().findViewById(R.id.previous);
+
+
+
+
+
+        // create seek bar, grab current song length & set sbar max to that.
+        final SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
+        //int maxTime = mService.getSongLength();
+        //sBar.setMax(maxTime);
+
+        // listener for seekbar interaction.
+        sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress,
+                                          boolean fromUser) {
+
+                // set song to current bar position
+                //mService.setSongPosition(progress);
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // what to do when listener starts tracking bar location
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // what to do when listener stops tracking bar location
+
+
+
+            }
+
+
+        });
+
 
 
 
@@ -200,6 +236,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
 
 
     }
+
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
