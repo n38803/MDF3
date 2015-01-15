@@ -1,60 +1,75 @@
 package android.fullsail.com.mdf3_w1;
 
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.BitmapFactory;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.support.v4.app.NotificationCompat;
 
+public class MainActivity extends Activity {
 
-import java.io.IOException;
-import java.util.ArrayList;
-
-import android.fullsail.com.mdf3_w1.MusicService.LocalBinder;
-
-
-public class MainActivity extends Activity implements ServiceConnection {
-
-    public static final int STANDARD_NOTIFICATION = 0x01001;
-    private static final int REQUEST_NOTIFY_LAUNCH = 0x02001;
-
-
-
-    boolean mBound;
-    MusicService mService;
-
-
-
+    String TAG = "MAIN_ACTIVITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Configuration launchConfig = new Configuration();
+
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new VerticalFragment())
+                    .commit();
+            Log.i(TAG, "Application launched in Vertical Orientation");
+        }
+        /*
+        else if (savedInstanceState == null && launchConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new HorizontalFragment())
+                    .commit();
+            Log.i(TAG, "Application launched in Horizontal Orientation");
+        }
+        else if (savedInstanceState != null && launchConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            setContentView(R.layout.fragment_vertical);
+        }
+        else if (savedInstanceState != null && launchConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setContentView(R.layout.fragment_horizontal);
+        }
+        */
+        else
+        {
+            Log.e(TAG, "ERROR");
+        }
 
 
-        Intent intent = new Intent(this, MusicService.class);
-        startService(intent);
-        bindService(intent, this, Context.BIND_AUTO_CREATE);
 
 
 
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // DEVICE IS IN HORIZONTAL
+            setContentView(R.layout.fragment_horizontal);
+            Log.i(TAG, "Orientation Change Horizontal");
+
+        }
+
+        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+            // DEVICE IS IN VERTICAL
+            setContentView(R.layout.fragment_vertical);
+            Log.i(TAG, "Orientation Change Vertical");
+
+
+        }
     }
 
 
@@ -78,146 +93,5 @@ public class MainActivity extends Activity implements ServiceConnection {
     }
 
 
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
 
-        Log.i("BIND", "CONNECTED");
-
-
-
-        LocalBinder binder = (LocalBinder )service;
-        mService = binder.getService();
-        mBound = true;
-
-        // Assign textviews
-        final TextView band = (TextView) findViewById(R.id.bandName);
-        final TextView song = (TextView) findViewById(R.id.songName);
-
-        band.setText(mService.getBand());
-        song.setText(mService.getSong());
-
-
-
-        Intent mainIntent = new Intent(this, MainActivity.class);
-
-        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, mainIntent, 0);
-
-
-
-        final NotificationManager mgr =
-                (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-
-            builder.setSmallIcon(R.drawable.ic_stat_av_my_library_music);
-            builder.setLargeIcon(BitmapFactory.decodeResource(
-                getResources(), R.drawable.ic_stat_av_my_library_music));
-            builder.setContentTitle(mService.getBand());
-            builder.setContentText(mService.getSong());
-            builder.setContentIntent(pIntent);
-
-        mgr.notify(STANDARD_NOTIFICATION, builder.build());
-
-
-
-
-
-
-
-
-
-
-
-
-        // Assign button references
-        Button play = (Button) findViewById(R.id.play);
-        Button stop = (Button) findViewById(R.id.stop);
-        Button pause = (Button) findViewById(R.id.pause);
-        Button next = (Button) findViewById(R.id.next);
-        Button previous = (Button) findViewById(R.id.previous);
-
-
-
-
-        // create onClickListeners for each button w/execution of corresponding methods
-        play.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        mService.onPlay();
-                        band.setText(mService.getBand());
-                        song.setText(mService.getSong());
-                            mgr.cancel(STANDARD_NOTIFICATION);
-                            builder.setContentTitle(mService.getBand());
-                            builder.setContentText(mService.getSong());
-                            mgr.notify(STANDARD_NOTIFICATION, builder.build());
-
-                    }
-                }
-        );
-
-        stop.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        mService.onStop();
-                        band.setText(mService.getBand());
-                        song.setText(mService.getSong());
-                            mgr.cancel(STANDARD_NOTIFICATION);
-
-                    }
-                }
-        );
-
-
-        pause.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        mService.onPause();
-                        band.setText(mService.getBand());
-                        song.setText(mService.getSong());
-                            mgr.cancel(STANDARD_NOTIFICATION);
-
-                    }
-                }
-        );
-
-        next.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        mService.onNext();
-                        band.setText(mService.getBand());
-                        song.setText(mService.getSong());
-                            mgr.cancel(STANDARD_NOTIFICATION);
-                            builder.setContentTitle(mService.getBand());
-                            builder.setContentText(mService.getSong());
-                            mgr.notify(STANDARD_NOTIFICATION, builder.build());
-
-                    }
-                }
-        );
-
-        previous.setOnClickListener(
-                new Button.OnClickListener() {
-                    public void onClick(View v) {
-                        mService.onPrevious();
-                        band.setText(mService.getBand());
-                        song.setText(mService.getSong());
-                            mgr.cancel(STANDARD_NOTIFICATION);
-                            builder.setContentTitle(mService.getBand());
-                            builder.setContentText(mService.getSong());
-                            mgr.notify(STANDARD_NOTIFICATION, builder.build());
-                    }
-                }
-        );
-
-
-
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-
-        mService = null;
-        mBound = false;
-
-    }
 }

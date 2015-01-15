@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
@@ -51,6 +52,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     boolean mIdle;
     public String band;
     public String song;
+    public String art;
     IBinder mBinder = new LocalBinder();
 
     public static final int STANDARD_NOTIFICATION = 0x01001;
@@ -98,25 +100,29 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Song track1 = new Song(
                 "Ghost of the Machine",
                 "Dragons Make Bad Babysitters",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons)
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons),
+                "gotmphoto"
         );
 
         Song track2 = new Song(
                 "Ghost of the Machine",
                 "On Letting Go",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo)
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo),
+                "gotmphoto2"
         );
 
         Song track3 = new Song(
                 "Ghost of the Machine",
                 "Baby, There's No Escape Cuz' I Sold the Exit Door",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby)
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby),
+                "gotmphoto3"
         );
 
         Song track4 = new Song(
                 "Ghost of the Machine",
                 "She's Not Dancing, She's Dying!",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing)
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing),
+                "gotmphoto4"
         );
 
 
@@ -173,6 +179,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         band = (songs[songPosition].getArtist());
         song = (songs[songPosition].getSong());
+        art = (songs[songPosition].getArt());
     }
 
     protected void onResume() {
@@ -265,6 +272,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return song;
     }
 
+    public String getArt(){
+
+        return art;
+    }
+
     @Override
     public boolean onUnbind(Intent intent) {
 
@@ -299,6 +311,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         onNext();
         getBand();
         getSong();
+        getArt();
     }
 }
 
