@@ -242,10 +242,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                 trackPosition++;
                 onPlay();
 
+
             }
         else if(isLooping == true)
         {
-            mPlayer.seekTo(0);
+            onReset();
             onPlay();
         }
     }
@@ -260,7 +261,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
         else if(isLooping == true)
         {
-            mPlayer.seekTo(0);
+            onReset();
             onPlay();
         }
     }
@@ -281,17 +282,17 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     // ------------ SETTERS ------------------
     public void setSongPosition(int newPosition){
-        if(mPlayer.isPlaying() == true)
+        if(mPlayer.isPlaying())
         {
-            onStop();
+            //onReset();
             mAudioPosition = newPosition;
-            onResume();
-            Log.i("From Seek Change", "Current Position: " + mAudioPosition);
+            mPlayer.seekTo(mAudioPosition);
+            Log.i("From Seek Change", "Current Position: " + newPosition);
         }
-        else if(mPlayer.isPlaying() == false)
+        else if(!mPlayer.isPlaying())
         {
             mAudioPosition = newPosition;
-            onResume();
+            onPlay();
             Log.i("From Seek Change", "Current Position: " + mAudioPosition);
         }
 
@@ -315,11 +316,13 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     public int getSongLength() {
 
-
+        mAudioLength = mPlayer.getDuration();
         return mAudioLength;
     }
 
     public int getSongPosition(){
+        mAudioPosition = mPlayer.getCurrentPosition();
+        Log.i("From getSongPosition Method", "Position: " + mAudioPosition);
         return mAudioPosition;
     }
 
@@ -342,7 +345,18 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
+    public boolean isNotNull(){
+        if (mPlayer != null)
+        {
+            return true;
 
+        }
+        else
+        {
+            return false;
+        }
+
+    }
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -381,7 +395,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         if(isLooping = true)
         {
-            mPlayer.seekTo(0);
+            onReset();
             onPlay();
         }
         else if (isLooping = false){

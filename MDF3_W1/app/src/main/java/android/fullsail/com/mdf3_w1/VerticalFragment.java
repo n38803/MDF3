@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import android.os.Handler;
 
 /**
  * Created by Shaun on 1/15/2015.
@@ -35,13 +36,12 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
 
     int sPosition;
     int sLength;
-    public int currentTime;
+    int sCurrent;
 
     boolean checkLoop = false;
     MusicService mService;
 
-
-
+    private Handler progressHandler = new Handler();
 
 
     public static VerticalFragment newInstance() {
@@ -66,9 +66,16 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         getActivity().startService(intent);
         getActivity().bindService(intent, this, Context.BIND_AUTO_CREATE);
 
+
+
+
+
+
+
+
     }
 
-    public void grabSongInfo(){
+    public void setSongInfo(){
 
         // Assign view references
         final TextView band = (TextView) getActivity().findViewById(R.id.bandName);
@@ -85,10 +92,54 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         // TODO - adjust size of photo
         art.setImageResource(R.drawable.gotmphoto);
 
-        sLength = mService.getSongLength();
-        sPosition = mService.getSongPosition();
+
 
     }
+
+    public void getSongMetrics(){
+        sLength = mService.getSongLength();
+        sPosition = mService.getSongPosition();
+    }
+
+    public void resetProgress(){
+
+        SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
+        sBar.setProgress(0);
+
+    }
+
+
+    private Runnable updateTime = new Runnable() {
+
+        @Override
+        public void run() {
+
+            SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
+            TextView time = (TextView) getActivity().findViewById(R.id.songProgress);
+
+            if(mService.isNotNull())
+            {
+                DateFormat dformat = new SimpleDateFormat("mm:ss:SS");
+                String current = dformat.format(mService.getSongPosition());
+                time.setText(current);
+
+
+                sCurrent = mService.getSongPosition() / 1000;
+                sBar.setProgress(sCurrent);
+                progressHandler.postDelayed(this, 1000);
+            }
+            else if (!mService.isNotNull())
+            {
+                sBar.setProgress(0);
+            }
+
+        }
+    };
+
+    private void updateProgress(){
+        progressHandler.postDelayed(updateTime, 100);
+    }
+
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -142,64 +193,55 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         Button next = (Button) getActivity().findViewById(R.id.next);
         Button previous = (Button) getActivity().findViewById(R.id.previous);
         Button loop = (Button) getActivity().findViewById(R.id.loop);
+        SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
 
 
-/*
-        while (sPosition <= sLength)
-        {
-
-            DateFormat dformat = new SimpleDateFormat("mm:ss");
-            String current = dformat.format(sPosition);
-            String total = dformat.format(sLength);
-            time.setText(current + " / " + total);
-            Log.e("TIME", "Timer: " + current);
-
-        }
-
-
-*/
         // initial establishment of song & info
-        grabSongInfo();
+        setSongInfo();
 
-        // create seek bar, grab current song length & set sbar max to that.
-        final SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
-        currentTime = (sPosition / 100);
+        // start progress bar
+        updateProgress();
+
         //sBar.setMax(maxTime);
 
-        // listener for seekbar interaction.
+        // seekbar listener for user interaction
         sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
+            // set song position to coincide with seekbar
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
 
-                int newTime = (progress*currentTime);
-                // set song to current bar position
-                mService.setSongPosition(newTime);
+                if(mService.isNotNull() && fromUser)
+                {
+                    getSongMetrics();
+                    int croppedLength = (sLength / 100);
+                    int newTime = (progress*croppedLength);
+                    Log.e(TAG, "Progress: " + progress + " / " + newTime);
+                    // set song to current bar position
+                    mService.setSongPosition(newTime);
+
+                }
 
             }
 
 
-
+            // what to do when listener starts tracking bar location
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                // what to do when listener starts tracking bar location
 
+                //updateProgress();
                 //sBar.setVerticalScrollbarPosition(mService.getSongPosition());
 
-
-
-
-
             }
 
+            // what to do when listener stops tracking bar location
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                // what to do when listener stops tracking bar location
-
-
 
             }
+
+
 
 
         });
@@ -234,7 +276,8 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onPlay();
-                        grabSongInfo();
+                        setSongInfo();
+                        //updateProgress();
                         mgr.cancel(STANDARD_NOTIFICATION);
                         builder.setContentTitle(mService.getBand());
                         builder.setContentText(mService.getSong());
@@ -248,7 +291,8 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onStop();
-                        grabSongInfo();
+                        resetProgress();
+                        setSongInfo();
                         mgr.cancel(STANDARD_NOTIFICATION);
 
                     }
@@ -260,7 +304,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onPause();
-                        grabSongInfo();
+                        setSongInfo();
                         mgr.cancel(STANDARD_NOTIFICATION);
 
                     }
@@ -271,7 +315,9 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onNext();
-                        grabSongInfo();
+                        setSongInfo();
+                        //resetProgress();
+                        //updateProgress();
                         mgr.cancel(STANDARD_NOTIFICATION);
                         builder.setContentTitle(mService.getBand());
                         builder.setContentText(mService.getSong());
@@ -285,7 +331,9 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onPrevious();
-                        grabSongInfo();
+                        setSongInfo();
+                        //resetProgress();
+                        //updateProgress();
                         mgr.cancel(STANDARD_NOTIFICATION);
                         builder.setContentTitle(mService.getBand());
                         builder.setContentText(mService.getSong());
@@ -297,6 +345,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
 
 
     }
+
 
 
     @Override
