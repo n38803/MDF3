@@ -24,6 +24,9 @@ import android.widget.Toast;
 
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Shaun on 1/11/2015.
@@ -47,8 +50,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     MediaPlayer mPlayer;
     boolean mActivityResumed;
     boolean mPrepared;
+    boolean isLooping = false;
     int mAudioPosition;
-    int songPosition;
+    int trackPosition;
+    int mAudioLength;
     boolean mIdle;
     public String band;
     public String song;
@@ -87,6 +92,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
             Log.e("SERVICES", "Started");
+
             onPlay();
 
 
@@ -132,14 +138,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mPlayer.setOnPreparedListener(this);
             mPlayer.setOnCompletionListener(this);
-            songPosition = 0;
+            trackPosition = 0;
             mIdle = false;
 
             try {
-                mPlayer.setDataSource(this, Uri.parse(songs[songPosition].getTrack()));
+                mPlayer.setDataSource(this, Uri.parse(songs[trackPosition].getTrack()));
                 mIdle = false;
-                Log.i("Initiating", "Track: " + songPosition);
+                Log.i("Initiating", "Track: " + trackPosition);
+
                 onResume();
+
             } catch(IOException e) {
                 e.printStackTrace();
                 Log.e("ERROR!", "--PLAYER RELEASED");
@@ -157,7 +165,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         else if (mPlayer != null && mIdle == true){
             try {
-                mPlayer.setDataSource(this, Uri.parse(songs[songPosition].getTrack()));
+                mPlayer.setDataSource(this, Uri.parse(songs[trackPosition].getTrack()));
                 mIdle = false;
                 onResume();
             } catch(IOException e) {
@@ -173,26 +181,30 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
-        band = (songs[songPosition].getArtist());
-        song = (songs[songPosition].getSong());
+        band = (songs[trackPosition].getArtist());
+        song = (songs[trackPosition].getSong());
         //art = (songs[songPosition].getArt());
     }
 
+    // ------------ UI CONTROL ------------------
     protected void onResume() {
-
-
 
         mActivityResumed = true;
 
-
         if(mPlayer != null && !mPrepared) {
-            Log.i("Preparing", "Track: " + songPosition);
+
             mPlayer.prepareAsync();
+            Log.i("Preparing", "Track: " + trackPosition);
+
         } else if(mPlayer != null && mPrepared) {
-            Log.i("Resuming", "Track: " + songPosition);
+
+            Log.i("Resuming", "Track: " + trackPosition);
+
             mPlayer.seekTo(mAudioPosition);
             mPlayer.start();
         }
+
+
     }
 
     protected void onPause() {
@@ -224,22 +236,32 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     protected void onNext() {
-        if(songPosition < 3)
+        if(trackPosition < 3  && isLooping == false)
             {
                 onReset();
-                songPosition++;
+                trackPosition++;
                 onPlay();
 
             }
+        else if(isLooping == true)
+        {
+            mPlayer.seekTo(0);
+            onPlay();
+        }
     }
 
     protected void onPrevious() {
-        if(songPosition > 0)
+        if(trackPosition > 0 && isLooping == false)
         {
             onReset();
-            songPosition--;
+            trackPosition--;
             onPlay();
 
+        }
+        else if(isLooping == true)
+        {
+            mPlayer.seekTo(0);
+            onPlay();
         }
     }
 
@@ -254,6 +276,51 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
         }
+    }
+
+
+    // ------------ SETTERS ------------------
+    public void setSongPosition(int newPosition){
+        if(mPlayer.isPlaying() == true)
+        {
+            onStop();
+            mAudioPosition = newPosition;
+            onResume();
+            Log.i("From Seek Change", "Current Position: " + mAudioPosition);
+        }
+        else if(mPlayer.isPlaying() == false)
+        {
+            mAudioPosition = newPosition;
+            onResume();
+            Log.i("From Seek Change", "Current Position: " + mAudioPosition);
+        }
+
+
+    }
+
+    public void setLooping(boolean checkLooping){
+        isLooping = checkLooping;
+        Log.i("LOOP", "Status: " + checkLooping);
+    }
+
+
+
+
+
+
+    // ------------ GETTERS ------------------
+    public Boolean getLooping(){
+        return isLooping;
+    }
+
+    public int getSongLength() {
+
+
+        return mAudioLength;
+    }
+
+    public int getSongPosition(){
+        return mAudioPosition;
     }
 
     public String getBand () {
@@ -272,6 +339,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         return art;
     }
+
+
+
+
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -299,15 +370,27 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         mPlayer.seekTo(mAudioPosition);
         mPlayer.start();
     }
+
+        mAudioLength = mPlayer.getDuration();
+        Log.e("Preparing", "Track Length: " + mAudioLength);
 }
 
     @Override
     public void onCompletion(MediaPlayer mp) {
 
-        onNext();
-        getBand();
-        getSong();
-        getArt();
+
+        if(isLooping = true)
+        {
+            mPlayer.seekTo(0);
+            onPlay();
+        }
+        else if (isLooping = false){
+            onNext();
+            getBand();
+            getSong();
+            getArt();
+        }
+
     }
 }
 

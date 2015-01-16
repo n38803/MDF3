@@ -13,19 +13,29 @@
     <TextView
         android:hint="Band Name Goes Here"
         android:id="@+id/bandName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="12pt"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_weight=".01"/>
 
     <TextView
         android:hint="Song Name Goes Here"
         android:id="@+id/songName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight=".2"/>
+        android:gravity="center"
+        android:layout_weight=".05"/>
+
+    <TextView
+        android:hint="00:00:00"
+        android:id="@+id/songProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="12pt"
+        android:textColor="#110532"
+        android:layout_weight=".1"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -35,12 +45,36 @@
 
         android:layout_gravity="center"/>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
-    <SeekBar
-        android:layout_width="250dp"
-        android:layout_height="50dp"
+        <Button
+        android:layout_width="75dp"
+        android:layout_height="wrap_content"
+        android:text="Loop"
         android:layout_gravity="center"
-        android:id="@+id/seek"/>
+        android:id="@+id/loop"
+        android:enabled="true" />
+
+        <TextView
+            android:layout_width="50dp"
+            android:padding="10dp"
+            android:text="OFF"
+            android:id="@+id/setLoop"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="#FF0000"/>
+
+        <SeekBar
+            android:layout_width="175dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:id="@+id/seek"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
