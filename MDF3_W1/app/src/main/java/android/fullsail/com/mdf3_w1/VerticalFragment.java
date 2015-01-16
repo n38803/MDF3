@@ -164,7 +164,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         Intent mainIntent = new Intent(VerticalFragment.this.getActivity(), VerticalFragment.class);
         PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, mainIntent, 0);
 
-
+        /*
         // initialize notification & dynamically assign image resources & song info
         final NotificationManager mgr =
                 (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -182,7 +182,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         builder.setContentIntent(pIntent);
 
         mgr.notify(STANDARD_NOTIFICATION, builder.build());
-
+        */
 
 
         // assign loop toggle reference
@@ -280,10 +280,10 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                         mService.onPlay();
                         setSongInfo();
                         //updateProgress();
-                        mgr.cancel(STANDARD_NOTIFICATION);
-                        builder.setContentTitle(mService.getBand());
-                        builder.setContentText(mService.getSong());
-                        mgr.notify(STANDARD_NOTIFICATION, builder.build());
+                        //mgr.cancel(STANDARD_NOTIFICATION);
+                        //builder.setContentTitle(mService.getBand());
+                        //builder.setContentText(mService.getSong());
+                        //mgr.notify(STANDARD_NOTIFICATION, builder.build());
 
                     }
                 }
@@ -296,7 +296,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                         mService.onStop();
 
                         setSongInfo();
-                        mgr.cancel(STANDARD_NOTIFICATION);
+                       // mgr.cancel(STANDARD_NOTIFICATION);
 
                     }
                 }
@@ -308,7 +308,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                     public void onClick(View v) {
                         mService.onPause();
                         setSongInfo();
-                        mgr.cancel(STANDARD_NOTIFICATION);
+                       // mgr.cancel(STANDARD_NOTIFICATION);
 
                     }
                 }
@@ -321,10 +321,10 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                         setSongInfo();
                         //resetProgress();
                         //updateProgress();
-                        mgr.cancel(STANDARD_NOTIFICATION);
-                        builder.setContentTitle(mService.getBand());
-                        builder.setContentText(mService.getSong());
-                        mgr.notify(STANDARD_NOTIFICATION, builder.build());
+                       // mgr.cancel(STANDARD_NOTIFICATION);
+                       // builder.setContentTitle(mService.getBand());
+                       // builder.setContentText(mService.getSong());
+                       // mgr.notify(STANDARD_NOTIFICATION, builder.build());
 
                     }
                 }
@@ -337,10 +337,10 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
                         setSongInfo();
                         //resetProgress();
                         //updateProgress();
-                        mgr.cancel(STANDARD_NOTIFICATION);
-                        builder.setContentTitle(mService.getBand());
-                        builder.setContentText(mService.getSong());
-                        mgr.notify(STANDARD_NOTIFICATION, builder.build());
+                       // mgr.cancel(STANDARD_NOTIFICATION);
+                        //builder.setContentTitle(mService.getBand());
+                       // builder.setContentText(mService.getSong());
+                       // mgr.notify(STANDARD_NOTIFICATION, builder.build());
                     }
                 }
         );

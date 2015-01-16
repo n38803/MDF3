@@ -47,6 +47,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
     private static final int FOREGROUND_NOTIFICATION = 0x01001;
+    private static final int REQUEST_NOTIFY_LAUNCH = 0x02001;
 
     MediaPlayer mPlayer;
     boolean mActivityResumed;
@@ -77,14 +78,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         super.onCreate();
 
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.drawable.gotmphoto2);
-        builder.setContentTitle("Playing Music");
-        builder.setContentText("Blah Blah Song Playing");
-        builder.setAutoCancel(false);
-        builder.setOngoing(true);
 
-        startForeground(FOREGROUND_NOTIFICATION, builder.build());
 
 
 
@@ -99,6 +93,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             Log.e("SERVICES", "Started");
 
             onPlay();
+
+
 
 
 
@@ -163,8 +159,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
-
-
         }
 
         else if (mPlayer != null && mIdle != true)
@@ -188,7 +182,19 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
 
 
+        // set pending intent
+        Intent songIntent = new Intent(this, MainActivity.class);
+        PendingIntent pIntent =
+                PendingIntent.getActivity(this, REQUEST_NOTIFY_LAUNCH, songIntent, 0);
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.gotmphoto2);
+        builder.setContentTitle(songs[trackPosition].getArtist());
+        builder.setContentText(songs[trackPosition].getSong());
+        builder.setAutoCancel(false);
+        builder.setOngoing(true);
+        builder.setContentIntent(pIntent);
+        startForeground(FOREGROUND_NOTIFICATION, builder.build());
 
 
 
@@ -221,9 +227,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     protected void onPause() {
         mActivityResumed = false;
 
+
         if(mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.pause();
             mAudioPosition = mPlayer.getCurrentPosition();
+            stopForeground(true);
         }
     }
 
@@ -234,6 +242,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
             mPlayer.stop();
             mPrepared = false;
             mAudioPosition = 0;
+            stopForeground(true);
 
         }
     }
