@@ -59,7 +59,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     boolean mIdle;
     public String band;
     public String song;
-    public String art;
+    public int art;
     IBinder mBinder = new LocalBinder();
 
 
@@ -107,25 +107,29 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         Song track1 = new Song(
                 "Ghost of the Machine",
                 "Dragons Make Bad Babysitters",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons)
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdragons),
+                (R.drawable.gotmphoto)
         );
 
         Song track2 = new Song(
                 "Ghost of the Machine",
                 "On Letting Go",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo)
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmlettinggo),
+                (R.drawable.gotmphoto2)
         );
 
         Song track3 = new Song(
                 "Ghost of the Machine",
                 "Baby, There's No Escape Cuz' I Sold the Exit Door",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby)
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmbaby),
+                (R.drawable.gotmphoto3)
         );
 
         Song track4 = new Song(
                 "Ghost of the Machine",
                 "She's Not Dancing, She's Dying!",
-                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing)
+                ("android.resource://" + getPackageName() + "/" + R.raw.gotmdancing),
+                (R.drawable.gotmphoto4)
         );
 
 
@@ -182,15 +186,22 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
 
 
+
+        band = (songs[trackPosition].getArtist());
+        song = (songs[trackPosition].getSong());
+        art = (songs[trackPosition].getArt());
+
+
+
         // set pending intent
         Intent songIntent = new Intent(this, MainActivity.class);
         PendingIntent pIntent =
                 PendingIntent.getActivity(this, REQUEST_NOTIFY_LAUNCH, songIntent, 0);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-        builder.setSmallIcon(R.drawable.gotmphoto2);
-        builder.setContentTitle(songs[trackPosition].getArtist());
-        builder.setContentText(songs[trackPosition].getSong());
+        builder.setSmallIcon(art);
+        builder.setContentTitle(band);
+        builder.setContentText(song);
         builder.setAutoCancel(false);
         builder.setOngoing(true);
         builder.setContentIntent(pIntent);
@@ -198,9 +209,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
 
 
-        band = (songs[trackPosition].getArtist());
-        song = (songs[trackPosition].getSong());
-        //art = (songs[songPosition].getArt());
+
     }
 
     // ------------ UI CONTROL ------------------
@@ -358,7 +367,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         return song;
     }
 
-    public String getArt(){
+    public int getArt(){
 
         return art;
     }

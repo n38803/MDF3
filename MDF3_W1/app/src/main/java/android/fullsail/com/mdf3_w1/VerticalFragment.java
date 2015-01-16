@@ -80,17 +80,13 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         // Assign view references
         final TextView band = (TextView) getActivity().findViewById(R.id.bandName);
         final TextView song = (TextView) getActivity().findViewById(R.id.songName);
-        final TextView time = (TextView) getActivity().findViewById(R.id.songProgress);
         final ImageView art = (ImageView) getActivity().findViewById(R.id.songArt);
 
 
         // set current song information to views
         band.setText(mService.getBand());
         song.setText(mService.getSong());
-
-        // TODO - MAKE PHOTO DYNAMIC
-        // TODO - adjust size of photo
-        art.setImageResource(R.drawable.gotmphoto);
+        art.setImageResource(mService.getArt());
 
 
 
@@ -107,6 +103,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         sBar.setProgress(0);
         sLength = 0;
         sPosition = 0;
+        sCurrent = 0;
 
     }
 
