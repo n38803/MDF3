@@ -45,7 +45,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
          */
 
-    private static final String SAVE_POSITION = "MainActivity.SAVE_POSITION";
+
+    private static final int FOREGROUND_NOTIFICATION = 0x01001;
 
     MediaPlayer mPlayer;
     boolean mActivityResumed;
@@ -59,9 +60,6 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public String song;
     public String art;
     IBinder mBinder = new LocalBinder();
-
-    public static final int STANDARD_NOTIFICATION = 0x01001;
-
 
 
 
@@ -79,7 +77,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         super.onCreate();
 
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.drawable.gotmphoto2);
+        builder.setContentTitle("Playing Music");
+        builder.setContentText("Blah Blah Song Playing");
+        builder.setAutoCancel(false);
+        builder.setOngoing(true);
 
+        startForeground(FOREGROUND_NOTIFICATION, builder.build());
 
 
 
@@ -154,6 +159,12 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
                 mPlayer.release();
                 mPlayer = null;
             }
+
+
+
+
+
+
         }
 
         else if (mPlayer != null && mIdle != true)
@@ -357,6 +368,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         }
 
     }
+
+
 
     @Override
     public boolean onUnbind(Intent intent) {

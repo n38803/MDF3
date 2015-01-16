@@ -105,6 +105,8 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
 
         SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
         sBar.setProgress(0);
+        sLength = 0;
+        sPosition = 0;
 
     }
 
@@ -119,9 +121,9 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
 
             if(mService.isNotNull())
             {
-                DateFormat dformat = new SimpleDateFormat("mm:ss:SS");
+                DateFormat dformat = new SimpleDateFormat("mm:ss");
                 String current = dformat.format(mService.getSongPosition());
-                time.setText(current);
+                time.setText("[ " + current + " ] ");
 
 
                 sCurrent = mService.getSongPosition() / 1000;
@@ -290,8 +292,9 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
         stop.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
-                        mService.onStop();
                         resetProgress();
+                        mService.onStop();
+
                         setSongInfo();
                         mgr.cancel(STANDARD_NOTIFICATION);
 
