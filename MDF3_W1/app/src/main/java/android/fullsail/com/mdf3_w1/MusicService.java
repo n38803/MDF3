@@ -7,26 +7,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
-import android.media.Image;
+
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 
 /**
  * Created by Shaun on 1/11/2015.
@@ -92,7 +84,8 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     public int onStartCommand(Intent intent, int flags, int startId) {
             Log.e("SERVICES", "Started");
 
-            onPlay();
+
+        onPlay();
 
 
 

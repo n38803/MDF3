@@ -7,11 +7,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +58,7 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
     @Override
     public void onActivityCreated(Bundle _savedInstanceState) {
         super.onActivityCreated(_savedInstanceState);
+
 
         Intent intent = new Intent(VerticalFragment.this.getActivity(), MusicService.class);
         getActivity().startService(intent);
@@ -138,6 +136,8 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
     private void updateProgress(){
         progressHandler.postDelayed(updateTime, 100);
     }
+
+
 
 
     @Override
@@ -351,8 +351,14 @@ public class VerticalFragment extends Fragment implements ServiceConnection {
     @Override
     public void onServiceDisconnected(ComponentName name) {
 
-        mService = null;
-        mBound = false;
+       // mService = null;
+        //mBound = false;
+
+        if(mBound){
+           // mService.unbindService();
+            mBound = false;
+            mService = null;
+        }
 
     }
 
