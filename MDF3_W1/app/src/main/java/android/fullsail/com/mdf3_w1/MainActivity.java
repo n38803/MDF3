@@ -53,6 +53,16 @@ public class MainActivity extends Activity {
                     .add(R.id.container, new HorizontalFragment())
                     .commit();
         }
+        else if (savedInstanceState !=null && portraitMode == true){
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, new HorizontalFragment())
+                    .commit();
+        }
+        else if (savedInstanceState !=null && portraitMode == false){
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.container, new HorizontalFragment())
+                    .commit();
+        }
 
 
 

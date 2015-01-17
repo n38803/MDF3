@@ -241,8 +241,10 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
         if(mPlayer != null && mPlayer.isPlaying()) {
             Log.e("MusicPlayer", "Stopped");
+
             mPlayer.stop();
             mPrepared = false;
+            mIdle = false;
             mAudioPosition = 0;
             stopForeground(true);
 
@@ -343,8 +345,16 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public int getSongPosition(){
-        mAudioPosition = mPlayer.getCurrentPosition();
-        Log.i("From getSongPosition Method", "Position: " + mAudioPosition);
+
+        if (mPlayer.isPlaying()){
+            mAudioPosition = mPlayer.getCurrentPosition();
+            Log.i("From getSongPosition Method", "Position: " + mAudioPosition);
+        }
+        else if (!mPlayer.isPlaying() && mIdle == false)
+        {
+            mAudioPosition = 0;
+        }
+
         return mAudioPosition;
     }
 
@@ -416,13 +426,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     @Override
     public void onCompletion(MediaPlayer mp) {
 
+        getLooping();
 
-        if(isLooping = true)
+        if(isLooping)
         {
             onReset();
             onPlay();
         }
-        else if (isLooping = false){
+        else {
             onNext();
             getBand();
             getSong();
