@@ -15,16 +15,18 @@ public class MainActivity extends Activity {
     public boolean portraitMode;
 
     public void getOrientation(){
-        Configuration config = new Configuration();
+
+        // vertical returns 1 // horizontal returns 2
+        int orientation = getResources().getConfiguration().orientation;
 
         // DEVICE IS IN HORIZONTAL
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        if (orientation == 2) {
             portraitMode = false;
             Log.i(TAG, "Orientation is Horizontal");
 
         }
         // DEVICE IS IN HORIZONTAL
-        else if (config.orientation == Configuration.ORIENTATION_PORTRAIT){
+        else if (orientation == 1){
             portraitMode = true;
             Log.i(TAG, "Orientation Change Vertical");
 
@@ -38,37 +40,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Configuration config = new Configuration();
-
-        // DEVICE IS IN HORIZONTAL
-        if (config.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            portraitMode = false;
-            Log.i(TAG, "Orientation is Horizontal");
-
-        }
-        // DEVICE IS IN HORIZONTAL
-        else if (config.orientation == Configuration.ORIENTATION_PORTRAIT){
-            portraitMode = true;
-            Log.i(TAG, "Orientation Change Vertical");
-
-
-        }
         getOrientation();
 
-
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null && portraitMode == true) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new VerticalFragment())
                     .commit();
-           // Log.i(TAG, "Application launched in Vertical Orientation = ");
         }
-       /* else if (savedInstanceState == null && portraitMode == false) {
+
+        else if (savedInstanceState == null && portraitMode == false) {
             getFragmentManager().beginTransaction()
                     .add(R.id.container, new HorizontalFragment())
                     .commit();
-            Log.i(TAG, "Application launched in Horizontal Orientation = ");
         }
-        */
+
 
 
 
@@ -81,8 +66,8 @@ public class MainActivity extends Activity {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-
         getOrientation();
+
 
     }
 

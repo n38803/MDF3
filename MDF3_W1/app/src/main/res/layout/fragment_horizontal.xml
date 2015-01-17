@@ -7,7 +7,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context=".MainActivity"
     android:weightSum="1">
 
     <LinearLayout
@@ -26,7 +25,7 @@
 
             <TextView
                 android:hint="Band Name Goes Here"
-                android:id="@+id/bandName"
+                android:id="@+id/hbandName"
                 android:layout_width="200dp"
                 android:layout_height="100dp"
                 android:textSize="12pt"
@@ -35,7 +34,7 @@
 
             <TextView
                 android:hint="Song Name Goes Here"
-                android:id="@+id/songName"
+                android:id="@+id/hsongName"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
@@ -43,7 +42,7 @@
 
             <TextView
                 android:hint="00:00:00"
-                android:id="@+id/songProgress"
+                android:id="@+id/hsongProgress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -64,20 +63,20 @@
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:text="|>"
-                    android:id="@+id/play"/>
+                    android:id="@+id/hplay"/>
 
                 <Button
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:text="| |"
-                    android:id="@+id/pause"/>
+                    android:id="@+id/hpause"/>
 
 
                 <Button
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
                     android:text="[|||]"
-                    android:id="@+id/stop"/>
+                    android:id="@+id/hstop"/>
 
 
 
@@ -95,8 +94,8 @@
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/gotmphoto"
+                android:layout_height="200dp"
+                android:id="@+id/hSongArt"
                 android:layout_gravity="center"/>
 
         </LinearLayout>
@@ -110,12 +109,29 @@
         android:weightSum="1">
 
         <Button
-            android:layout_width="100dp"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="BACK"
+            android:text="Loop"
+            android:layout_gravity="center"
+            android:id="@+id/hloop"
+            android:enabled="true" />
+
+        <TextView
+            android:layout_width="50dp"
+            android:padding="10dp"
+            android:text="OFF"
+            android:id="@+id/hsetLoop"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:textColor="#FF0000"/>
+
+        <Button
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            android:text="BCK"
             android:layout_weight=".2"
             android:layout_gravity="left"
-            android:id="@+id/previous"
+            android:id="@+id/hprevious"
             android:enabled="true" />
 
         <SeekBar
@@ -123,15 +139,15 @@
             android:layout_height="50dp"
             android:layout_weight=".6"
             android:layout_gravity="center"
-            android:id="@+id/seek"/>
+            android:id="@+id/hseek"/>
 
         <Button
-            android:layout_width="100dp"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:text="NEXT"
+            android:text="FWD"
             android:layout_weight=".2"
             android:layout_gravity="right"
-            android:id="@+id/next"
+            android:id="@+id/hnext"
             android:enabled="true" />
 
 

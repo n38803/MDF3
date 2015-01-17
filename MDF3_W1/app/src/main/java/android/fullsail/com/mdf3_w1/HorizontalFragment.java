@@ -1,6 +1,7 @@
 package android.fullsail.com.mdf3_w1;
 
 import android.app.Fragment;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,7 +28,7 @@ import android.os.Handler;
 public class HorizontalFragment extends Fragment implements ServiceConnection {
 
     public static final String TAG = "HORIZONTAL";
-    public static final int STANDARD_NOTIFICATION = 0x01001;
+    public static final int STANDARD_NOTIFICATION = 0x01002;
     boolean mBound;
 
     int sPosition;
@@ -58,15 +59,10 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
     public void onActivityCreated(Bundle _savedInstanceState) {
         super.onActivityCreated(_savedInstanceState);
 
+
         Intent intent = new Intent(HorizontalFragment.this.getActivity(), MusicService.class);
         getActivity().startService(intent);
         getActivity().bindService(intent, this, Context.BIND_AUTO_CREATE);
-
-
-
-
-
-
 
 
     }
@@ -74,9 +70,9 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
     public void setSongInfo(){
 
         // Assign view references
-        final TextView band = (TextView) getActivity().findViewById(R.id.bandName);
-        final TextView song = (TextView) getActivity().findViewById(R.id.songName);
-        final ImageView art = (ImageView) getActivity().findViewById(R.id.songArt);
+        final TextView band = (TextView) getActivity().findViewById(R.id.hbandName);
+        final TextView song = (TextView) getActivity().findViewById(R.id.hsongName);
+        final ImageView art = (ImageView) getActivity().findViewById(R.id.hSongArt);
 
 
         // set current song information to views
@@ -95,7 +91,7 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
 
     public void resetProgress(){
 
-        SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
+        SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.hseek);
         sBar.setProgress(0);
         sLength = 0;
         sPosition = 0;
@@ -109,8 +105,8 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
         @Override
         public void run() {
 
-            SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
-            TextView time = (TextView) getActivity().findViewById(R.id.songProgress);
+            SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.hseek);
+            TextView time = (TextView) getActivity().findViewById(R.id.hsongProgress);
 
             if(mService.isNotNull())
             {
@@ -136,6 +132,8 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
     }
 
 
+
+
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
 
@@ -148,17 +146,47 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
         mBound = true;
 
 
+
+
+
+
+
+        // set pending intent
+        Intent mainIntent = new Intent(HorizontalFragment.this.getActivity(), HorizontalFragment.class);
+        PendingIntent pIntent = PendingIntent.getActivity(getActivity(), 0, mainIntent, 0);
+
+        /*
+        // initialize notification & dynamically assign image resources & song info
+        final NotificationManager mgr =
+                (NotificationManager)getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(getActivity().getApplicationContext());
+
+        builder.setSmallIcon(R.drawable.ic_stat_av_my_library_music);
+        builder.setLargeIcon(BitmapFactory.decodeResource(
+
+        // TODO: MAKE PHOTO DYNAMIC
+
+                getResources(), R.drawable.gotmphoto));
+        builder.setContentTitle(mService.getBand());
+        builder.setContentText(mService.getSong());
+        builder.setContentIntent(pIntent);
+
+        mgr.notify(STANDARD_NOTIFICATION, builder.build());
+        */
+
+
         // assign loop toggle reference
-        final TextView setLoop = (TextView) getActivity().findViewById(R.id.setLoop);
+        final TextView setLoop = (TextView) getActivity().findViewById(R.id.hsetLoop);
 
         // Assign button references
-        Button play = (Button) getActivity().findViewById(R.id.play);
-        Button stop = (Button) getActivity().findViewById(R.id.stop);
-        Button pause = (Button) getActivity().findViewById(R.id.pause);
-        Button next = (Button) getActivity().findViewById(R.id.next);
-        Button previous = (Button) getActivity().findViewById(R.id.previous);
-        Button loop = (Button) getActivity().findViewById(R.id.loop);
-        SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.seek);
+        Button play = (Button) getActivity().findViewById(R.id.hplay);
+        Button stop = (Button) getActivity().findViewById(R.id.hstop);
+        Button pause = (Button) getActivity().findViewById(R.id.hpause);
+        Button next = (Button) getActivity().findViewById(R.id.hnext);
+        Button previous = (Button) getActivity().findViewById(R.id.hprevious);
+        Button loop = (Button) getActivity().findViewById(R.id.hloop);
+        SeekBar sBar = (SeekBar) getActivity().findViewById(R.id.hseek);
 
 
         // initial establishment of song & info
@@ -166,6 +194,8 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
 
         // start progress bar
         updateProgress();
+
+        //sBar.setMax(maxTime);
 
         // seekbar listener for user interaction
         sBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -192,6 +222,9 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
             // what to do when listener starts tracking bar location
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+
+                //updateProgress();
+                //sBar.setVerticalScrollbarPosition(mService.getSongPosition());
 
             }
 
@@ -232,12 +265,17 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
                 }
         );
 
+
         play.setOnClickListener(
                 new Button.OnClickListener() {
                     public void onClick(View v) {
                         mService.onPlay();
                         setSongInfo();
-
+                        //updateProgress();
+                        //mgr.cancel(STANDARD_NOTIFICATION);
+                        //builder.setContentTitle(mService.getBand());
+                        //builder.setContentText(mService.getSong());
+                        //mgr.notify(STANDARD_NOTIFICATION, builder.build());
 
                     }
                 }
@@ -250,7 +288,7 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
                         mService.onStop();
 
                         setSongInfo();
-
+                        // mgr.cancel(STANDARD_NOTIFICATION);
 
                     }
                 }
@@ -262,7 +300,7 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
                     public void onClick(View v) {
                         mService.onPause();
                         setSongInfo();
-
+                        // mgr.cancel(STANDARD_NOTIFICATION);
 
                     }
                 }
@@ -273,7 +311,12 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
                     public void onClick(View v) {
                         mService.onNext();
                         setSongInfo();
-
+                        //resetProgress();
+                        //updateProgress();
+                        // mgr.cancel(STANDARD_NOTIFICATION);
+                        // builder.setContentTitle(mService.getBand());
+                        // builder.setContentText(mService.getSong());
+                        // mgr.notify(STANDARD_NOTIFICATION, builder.build());
 
                     }
                 }
@@ -284,7 +327,12 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
                     public void onClick(View v) {
                         mService.onPrevious();
                         setSongInfo();
-
+                        //resetProgress();
+                        //updateProgress();
+                        // mgr.cancel(STANDARD_NOTIFICATION);
+                        //builder.setContentTitle(mService.getBand());
+                        // builder.setContentText(mService.getSong());
+                        // mgr.notify(STANDARD_NOTIFICATION, builder.build());
                     }
                 }
         );
@@ -298,8 +346,14 @@ public class HorizontalFragment extends Fragment implements ServiceConnection {
     @Override
     public void onServiceDisconnected(ComponentName name) {
 
-        mService = null;
-        mBound = false;
+        // mService = null;
+        //mBound = false;
+
+        if(mBound){
+            // mService.unbindService();
+            mBound = false;
+            mService = null;
+        }
 
     }
 
