@@ -30,7 +30,7 @@
         <receiver android:name=".widgetclasses.CollectionWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.fullsail.android.ACTION_VIEW_DETAILS" />
+                <action android:name="android.fullsail.com.mdf3_w3.ACTION_VIEW_DETAILS" />
             </intent-filter>
 
             <meta-data android:name="android.appwidget.provider"

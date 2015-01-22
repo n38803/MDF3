@@ -1,20 +1,26 @@
 package android.fullsail.com.mdf3_w3.widgetclasses;
 
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
 import android.fullsail.com.mdf3_w3.dataclass.NewsArticle;
 import android.fullsail.com.mdf3_w3.R;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService.RemoteViewsFactory;
 
 public class CollectionWidgetViewFactory implements RemoteViewsFactory {
 
     private static final int ID_CONSTANT = 0x0101010;
+    private final String TAG = "WIDGET VIEW";
+    private final String saveFile = "MDF3W3.txt";
 
     private ArrayList<NewsArticle> mArticles;
     private Context mContext;
+
 
     public CollectionWidgetViewFactory(Context context) {
         mContext = context;
@@ -23,14 +29,31 @@ public class CollectionWidgetViewFactory implements RemoteViewsFactory {
 
     @Override
     public void onCreate() {
-        String[] titles = { "New Phones Released!", "Random App Makes $300 Million",
-                "Google Glass Robots", "Arduino Used in Mobile", "Orioles Win World Series" };
-        String[] authors = { "Phone Scoop", "Yahoo Marketing Department", "Cyborg Alliance",
-                "Some Open Source Person", "Roch Kubatko" };
-        String[] dates = { "Everyday", "June 20, 2012", "September 10, 2014", "August 9, 2014", "November 10, 2014" };
 
-        for(int i = 0; i < 5; i++) {
-            mArticles.add(new NewsArticle(titles[i], authors[i], dates[i]));
+        Log.e(TAG, "ON CREATE");
+        readFile();
+
+
+    }
+
+    public void readFile() {
+        try {
+            FileInputStream fin = mContext.openFileInput(saveFile);
+            ObjectInputStream oin = new ObjectInputStream(fin);
+            mArticles = (ArrayList<NewsArticle>) oin.readObject();
+            oin.close();
+
+        } catch(Exception e) {
+            Log.e(TAG, "There are no files to pull");
+
+
+            // static population of data
+            mArticles = new ArrayList<NewsArticle>();
+            mArticles.add(new NewsArticle("Article One", "John Doe", "01/01/15"));
+            mArticles.add(new NewsArticle("Article Two", "Jane Doe", "01/02/15"));
+            mArticles.add(new NewsArticle("Article Three", "Julie Doe", "01/04/15"));
+            mArticles.add(new NewsArticle("Article Four", "Jason Doe", "01/05/15"));
+            mArticles.add(new NewsArticle("Article Five", "Jacob Doe", "01/06/15"));
         }
     }
 
@@ -59,6 +82,7 @@ public class CollectionWidgetViewFactory implements RemoteViewsFactory {
         itemView.setTextViewText(R.id.title, article.getTitle());
         itemView.setTextViewText(R.id.author, article.getAuthor());
         itemView.setTextViewText(R.id.date, article.getDate());
+
 
         Intent intent = new Intent();
         intent.putExtra(CollectionWidgetProvider.EXTRA_ITEM, article);

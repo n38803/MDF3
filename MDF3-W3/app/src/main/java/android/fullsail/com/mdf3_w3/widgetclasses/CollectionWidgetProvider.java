@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.fullsail.com.mdf3_w3.DetailsActivity;
 import android.fullsail.com.mdf3_w3.dataclass.NewsArticle;
 import android.fullsail.com.mdf3_w3.R;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 
@@ -16,11 +17,15 @@ public class CollectionWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_VIEW_DETAILS = "android.fullsail.com.mdf3_w3.ACTION_VIEW_DETAILS";
     public static final String EXTRA_ITEM = "android.fullsail.com.mdf3_w3.CollectionWidgetProvider.EXTRA_ITEM";
 
+    public final String TAG = "WIDGET PROVIDER";
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
                          int[] appWidgetIds) {
 
         for(int i = 0; i < appWidgetIds.length; i++) {
+
+            Log.e(TAG, "ON UPDATE");
 
             int widgetId = appWidgetIds[i];
 

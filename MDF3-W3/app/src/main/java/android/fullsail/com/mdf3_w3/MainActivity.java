@@ -3,6 +3,7 @@ package android.fullsail.com.mdf3_w3;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.fullsail.com.mdf3_w3.dataclass.NewsArticle;
 import android.fullsail.com.mdf3_w3.fragments.MainListFragment;
@@ -26,16 +27,28 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 
+
+
 public class MainActivity extends Activity implements MainListFragment.ArticleListener {
 
     private final String TAG = "MAIN ACTIVITY";
-    private final String contactFile = "MDF3W3.txt";
+    private final String saveFile = "MDF3W3.txt";
 
 
     public static final int ADDREQUEST = 2;
 
     private ArrayList<NewsArticle> mArticleList;
     public Button addButton;
+
+    private Context mContext;
+
+    public Context getContext() {
+        return mContext;
+    }
+
+    public void setContext(Context mContext) {
+        this.mContext = mContext;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +158,7 @@ public class MainActivity extends Activity implements MainListFragment.ArticleLi
     private void writeFile() {
 
         try {
-            FileOutputStream fos = openFileOutput(contactFile, this.MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput(saveFile, this.MODE_PRIVATE);
 
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(mArticleList);
@@ -163,7 +176,7 @@ public class MainActivity extends Activity implements MainListFragment.ArticleLi
 
 
         try {
-            FileInputStream fin = openFileInput(contactFile);
+            FileInputStream fin = openFileInput(saveFile);
             ObjectInputStream oin = new ObjectInputStream(fin);
             mArticleList = (ArrayList<NewsArticle>) oin.readObject();
             oin.close();

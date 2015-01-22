@@ -2,7 +2,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="@android:color/background_dark" >
+    android:background="#333333" >
 
     <ListView android:id="@+id/article_list"
         android:layout_width="fill_parent"
