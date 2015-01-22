@@ -15,11 +15,19 @@
         android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
 
         <activity android:name=".DetailsActivity"
+            android:label="Article Details" >
+        </activity>
+
+        <activity android:name=".MainActivity"
             android:label="@string/app_name" >
         </activity>
 
+        <activity
+            android:name=".AddActivity"
+            android:label="Publish New Article" >
+        </activity>
 
-        <receiver android:name=".CollectionWidgetProvider" >
+        <receiver android:name=".widgetclasses.CollectionWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.fullsail.android.ACTION_VIEW_DETAILS" />
@@ -29,7 +37,7 @@
                 android:resource="@xml/collection_appwidget_info" />
         </receiver>
 
-        <service android:name=".CollectionWidgetService"
+        <service android:name=".widgetclasses.CollectionWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
     </application>

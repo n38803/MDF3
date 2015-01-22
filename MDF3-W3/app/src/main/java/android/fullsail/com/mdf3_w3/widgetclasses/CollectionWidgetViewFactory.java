@@ -1,9 +1,11 @@
-package android.fullsail.com.mdf3_w3;
+package android.fullsail.com.mdf3_w3.widgetclasses;
 
 import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
+import android.fullsail.com.mdf3_w3.dataclass.NewsArticle;
+import android.fullsail.com.mdf3_w3.R;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService.RemoteViewsFactory;
 

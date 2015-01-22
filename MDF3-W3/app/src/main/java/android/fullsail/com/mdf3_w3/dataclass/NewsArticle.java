@@ -1,4 +1,4 @@
-package android.fullsail.com.mdf3_w3;
+package android.fullsail.com.mdf3_w3.dataclass;
 
 import java.io.Serializable;
 

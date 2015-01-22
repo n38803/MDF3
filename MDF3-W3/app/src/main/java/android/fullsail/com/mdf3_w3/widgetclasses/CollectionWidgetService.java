@@ -1,4 +1,4 @@
-package android.fullsail.com.mdf3_w3;
+package android.fullsail.com.mdf3_w3.widgetclasses;
 
 import android.content.Intent;
 import android.widget.RemoteViewsService;

@@ -1,17 +1,20 @@
-package android.fullsail.com.mdf3_w3;
+package android.fullsail.com.mdf3_w3.widgetclasses;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.fullsail.com.mdf3_w3.DetailsActivity;
+import android.fullsail.com.mdf3_w3.dataclass.NewsArticle;
+import android.fullsail.com.mdf3_w3.R;
 import android.widget.RemoteViews;
 
 
 public class CollectionWidgetProvider extends AppWidgetProvider {
 
-    public static final String ACTION_VIEW_DETAILS = "com.fullsail.android.ACTION_VIEW_DETAILS";
-    public static final String EXTRA_ITEM = "com.fullsail.android.CollectionWidgetProvider.EXTRA_ITEM";
+    public static final String ACTION_VIEW_DETAILS = "android.fullsail.com.mdf3_w3.ACTION_VIEW_DETAILS";
+    public static final String EXTRA_ITEM = "android.fullsail.com.mdf3_w3.CollectionWidgetProvider.EXTRA_ITEM";
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
