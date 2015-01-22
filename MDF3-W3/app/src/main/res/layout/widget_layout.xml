@@ -4,6 +4,12 @@
     android:orientation="vertical"
     android:background="#333333" >
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/widgetAdd"
+        android:text="PUBLISH NEW ARTICLE"/>
+
     <ListView android:id="@+id/article_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />

@@ -5,16 +5,19 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.fullsail.com.mdf3_w3.AddActivity;
 import android.fullsail.com.mdf3_w3.DetailsActivity;
 import android.fullsail.com.mdf3_w3.dataclass.NewsArticle;
 import android.fullsail.com.mdf3_w3.R;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.RemoteViews;
 
 
 public class CollectionWidgetProvider extends AppWidgetProvider {
 
     public static final String ACTION_VIEW_DETAILS = "android.fullsail.com.mdf3_w3.ACTION_VIEW_DETAILS";
+    public static final String ACTION_ADD_ARTICLE = "android.fullsail.com.mdf3_w3.ACTION_ADD_ARTICLE";
     public static final String EXTRA_ITEM = "android.fullsail.com.mdf3_w3.CollectionWidgetProvider.EXTRA_ITEM";
 
     public final String TAG = "WIDGET PROVIDER";
@@ -36,9 +39,17 @@ public class CollectionWidgetProvider extends AppWidgetProvider {
             widgetView.setRemoteAdapter(R.id.article_list, intent);
             widgetView.setEmptyView(R.id.article_list, R.id.empty);
 
+            widgetView.setRemoteAdapter(R.id.widgetAdd, intent);
+
+
+
             Intent detailIntent = new Intent(ACTION_VIEW_DETAILS);
             PendingIntent pIntent = PendingIntent.getBroadcast(context, 0, detailIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             widgetView.setPendingIntentTemplate(R.id.article_list, pIntent);
+
+            Intent addIntent = new Intent(ACTION_ADD_ARTICLE);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, addIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            widgetView.setOnClickPendingIntent(R.id.widgetAdd, pendingIntent );
 
             appWidgetManager.updateAppWidget(widgetId, widgetView);
         }
@@ -56,6 +67,16 @@ public class CollectionWidgetProvider extends AppWidgetProvider {
                 details.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 details.putExtra(DetailsActivity.EXTRA_ITEM, article);
                 context.startActivity(details);
+            }
+        }
+
+        else if(intent.getAction().equals(ACTION_ADD_ARTICLE)) {
+            NewsArticle article = (NewsArticle)intent.getSerializableExtra(EXTRA_ITEM);
+            if(article != null) {
+                Intent publish = new Intent(context, AddActivity.class);
+                publish.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                publish.putExtra(DetailsActivity.EXTRA_ITEM, article);
+                context.startActivity(publish);
             }
         }
 
