@@ -18,7 +18,7 @@ public class CollectionWidgetProvider extends AppWidgetProvider {
     public static final String ACTION_VIEW_DETAILS = "android.fullsail.com.mdf3_w3.ACTION_VIEW_DETAILS";
     public static final String ACTION_ADD_ARTICLE = "android.fullsail.com.mdf3_w3.ACTION_ADD_ARTICLE";
     public static final String EXTRA_ITEM = "android.fullsail.com.mdf3_w3.CollectionWidgetProvider.EXTRA_ITEM";
-    public final static int ADD_REQUEST = 5;
+    public final static int ADD_REQUEST = 1;
 
     public final String TAG = "WIDGET PROVIDER";
 
@@ -53,6 +53,8 @@ public class CollectionWidgetProvider extends AppWidgetProvider {
             widgetView.setOnClickPendingIntent(R.id.widgetAdd, pendingIntent );
 
             appWidgetManager.updateAppWidget(widgetId, widgetView);
+
+
         }
 
         super.onUpdate(context, appWidgetManager, appWidgetIds);
@@ -68,7 +70,7 @@ public class CollectionWidgetProvider extends AppWidgetProvider {
             if(article != null) {
                 Intent details = new Intent(context, DetailsActivity.class);
                 details.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                details.putExtra(DetailsActivity.EXTRA_ITEM, article);
+                details.putExtra(DetailsActivity.WIDGET_ITEM, article);
                 context.startActivity(details);
             }
         }

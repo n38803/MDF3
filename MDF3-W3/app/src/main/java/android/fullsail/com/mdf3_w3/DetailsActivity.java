@@ -12,7 +12,8 @@ public class DetailsActivity extends Activity  {
 
     private NewsArticle mArticle;
 
-    public static final String EXTRA_ITEM = "android.fullsail.com.mdf3_w3.DetailsActivity.EXTRA_ITEM";
+    public static final String WIDGET_ITEM = "com.fullsail.android.DetailsActivity.WIDGET_ITEM";
+    public static final String APP_ITEM = "com.fullsail.android.DetailsActivity.APP_ITEM";
 
 
     @Override
@@ -20,8 +21,8 @@ public class DetailsActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        Intent intent = getIntent();
-        mArticle = (NewsArticle) intent.getSerializableExtra(EXTRA_ITEM);
+        Intent wIntent = getIntent();
+        mArticle = (NewsArticle) wIntent.getSerializableExtra(WIDGET_ITEM);
         if (mArticle == null) {
             finish();
             return;
