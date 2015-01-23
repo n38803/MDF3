@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 public class AddActivity extends Activity  {
 
+    //public static final String ADDEXTRA = "android.fullsail.com.mdf3_w3.DetailsActivity.ADDEXTRA";
+
     public TextView inputTitle;
     public TextView inputAuthor;
     public TextView inputDate;
@@ -22,7 +24,6 @@ public class AddActivity extends Activity  {
     public String aAuthor;
     public String aDate;
 
-    private ArrayList<NewsArticle> mContactDataList;
 
 
     @Override
@@ -68,9 +69,6 @@ public class AddActivity extends Activity  {
         aAuthor = inputAuthor.getText().toString();
         aDate = inputDate.getText().toString();
 
-        // save variables to contact object
-        //mContactDataList = new ArrayList<Contact>();
-        // mContactDataList.add(new Contact(cName, cEmail, cLocation));
 
         Intent intent = new Intent();
         intent.putExtra("articleTitle", aTitle);

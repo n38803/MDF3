@@ -32,7 +32,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.fullsail.com.mdf3_w3.ACTION_VIEW_DETAILS" />
                 <action android:name="android.fullsail.com.mdf3_w3.ACTION_ADD_ARTICLE" />
-            </intent-filter>
+             </intent-filter>
 
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/collection_appwidget_info" />
