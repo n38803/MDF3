@@ -141,7 +141,7 @@ public class MainActivity extends Activity implements MainListFragment.ArticleLi
         Intent detailIntent = new Intent(this, DetailsActivity.class);
 
         // pass position from list into intent by using constant from detail activity
-        detailIntent.putExtra(DetailsActivity.APP_ITEM, mArticleList.get(position));
+        detailIntent.putExtra(DetailsActivity.EXTRA_ITEM, mArticleList.get(position));
 
         // start detail activity by passing intent we wish to load
         startActivity(detailIntent);

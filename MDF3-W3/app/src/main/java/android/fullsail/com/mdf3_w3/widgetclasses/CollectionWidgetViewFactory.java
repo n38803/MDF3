@@ -1,14 +1,20 @@
 package android.fullsail.com.mdf3_w3.widgetclasses;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.fullsail.com.mdf3_w3.AddActivity;
 import android.fullsail.com.mdf3_w3.dataclass.NewsArticle;
 import android.fullsail.com.mdf3_w3.R;
 import android.util.Log;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService.RemoteViewsFactory;
 
@@ -30,11 +36,13 @@ public class CollectionWidgetViewFactory implements RemoteViewsFactory {
     @Override
     public void onCreate() {
 
-        Log.e(TAG, "ON CREATE");
+        Log.e(TAG, "Widget onCreate");
         readFile();
 
 
     }
+
+
 
     public void readFile() {
         try {
@@ -72,8 +80,12 @@ public class CollectionWidgetViewFactory implements RemoteViewsFactory {
         return null;
     }
 
+
+
     @Override
     public RemoteViews getViewAt(int position) {
+
+        Log.e(TAG, "RemoteViews getViewAt");
 
         NewsArticle article = mArticles.get(position);
 
@@ -91,6 +103,8 @@ public class CollectionWidgetViewFactory implements RemoteViewsFactory {
         return itemView;
     }
 
+
+
     @Override
     public int getViewTypeCount() {
         return 1;
@@ -105,10 +119,32 @@ public class CollectionWidgetViewFactory implements RemoteViewsFactory {
     public void onDataSetChanged() {
         // Heavy lifting code can go here without blocking the UI.
         // You would update the data in your collection here as well.
+        Log.w(TAG, "Data has changed!");
+        readFile();
+    }
+
+
+
+    private void writeFile() {
+
+        try {
+            FileOutputStream fos = mContext.openFileOutput(saveFile, mContext.MODE_PRIVATE);
+
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(mArticles);
+            Log.i(TAG, "Object Saved Successfully");
+            oos.close();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Save Unsuccessful");
+        }
+
+
     }
 
     @Override
     public void onDestroy() {
+        //unregisterReceiver(mAppReceiver);
         mArticles.clear();
     }
 

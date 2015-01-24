@@ -12,7 +12,7 @@ public class DetailsActivity extends Activity  {
 
     private NewsArticle mArticle;
 
-    public static final String WIDGET_ITEM = "com.fullsail.android.DetailsActivity.WIDGET_ITEM";
+    public static final String EXTRA_ITEM = "com.fullsail.android.DetailsActivity.EXTRA_ITEM";
     public static final String APP_ITEM = "com.fullsail.android.DetailsActivity.APP_ITEM";
 
 
@@ -22,7 +22,10 @@ public class DetailsActivity extends Activity  {
         setContentView(R.layout.activity_details);
 
         Intent wIntent = getIntent();
-        mArticle = (NewsArticle) wIntent.getSerializableExtra(WIDGET_ITEM);
+        mArticle = (NewsArticle) wIntent.getSerializableExtra(EXTRA_ITEM);
+
+
+
         if (mArticle == null) {
             finish();
             return;

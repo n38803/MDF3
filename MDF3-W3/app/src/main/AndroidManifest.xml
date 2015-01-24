@@ -25,6 +25,7 @@
         <activity
             android:name=".AddActivity"
             android:label="Publish New Article" >
+
         </activity>
 
         <receiver android:name=".widgetclasses.CollectionWidgetProvider" >

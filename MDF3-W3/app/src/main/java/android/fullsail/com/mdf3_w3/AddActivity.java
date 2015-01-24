@@ -1,24 +1,39 @@
 package android.fullsail.com.mdf3_w3;
 
 import android.app.Activity;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.fullsail.com.mdf3_w3.dataclass.NewsArticle;
 import android.fullsail.com.mdf3_w3.fragments.AddFragment;
+import android.fullsail.com.mdf3_w3.widgetclasses.CollectionWidgetProvider;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class AddActivity extends Activity  {
 
-    //public static final String ADDEXTRA = "android.fullsail.com.mdf3_w3.DetailsActivity.ADDEXTRA";
+    public static final String ACTION_ADD_ARTICLE = "android.fullsail.com.mdf3_w3.ACTION_ADD_ARTICLE";
 
     public TextView inputTitle;
     public TextView inputAuthor;
     public TextView inputDate;
+
+    private final String saveFile = "MDF3W3.txt";
+    private final String TAG = "ADD ACTIVITY";
+
+    CollectionWidgetProvider mAppReceiver = new CollectionWidgetProvider();
+
+    private ArrayList<NewsArticle> mArticleList;
 
     public String aTitle;
     public String aAuthor;
@@ -38,14 +53,6 @@ public class AddActivity extends Activity  {
                     .commit();
         }
 
-        // Grabs intent from main activity
-        Intent addIntent = getIntent();
-
-        // verify there is an intent available to grab
-        if(addIntent != null){
-
-            // do stuff after grabbing intent.
-        }
 
 
 
@@ -53,13 +60,24 @@ public class AddActivity extends Activity  {
     }
 
     public void onCancel(View v){
+        // Grabs intent from main activity
+        Intent addIntent = getIntent();
+
         clearDisplay();
         finish();
 
 
     }
 
+
+
+
     public void onSave(View v){
+
+        // Grabs intent from main activity
+        Intent addIntent = getIntent();
+
+
         inputTitle = (TextView) findViewById(R.id.inputTitle);
         inputAuthor = (TextView) findViewById(R.id.inputAuthor);
         inputDate = (TextView) findViewById(R.id.inputDate);
@@ -69,13 +87,22 @@ public class AddActivity extends Activity  {
         aAuthor = inputAuthor.getText().toString();
         aDate = inputDate.getText().toString();
 
+        //registerReceiver(mAppReceiver, new IntentFilter(ACTION_ADD_ARTICLE));
 
-        Intent intent = new Intent();
-        intent.putExtra("articleTitle", aTitle);
-        intent.putExtra("articleAuthor", aAuthor);
-        intent.putExtra("articleDate", aDate);
-        intent.putExtra("action", "add");
-        setResult(RESULT_OK, intent);
+        Intent broadcast  = new Intent(ACTION_ADD_ARTICLE);
+        broadcast .putExtra("articleTitle", aTitle);
+        broadcast .putExtra("articleAuthor", aAuthor);
+        broadcast .putExtra("articleDate", aDate);
+        broadcast .putExtra("action", "add");
+        sendBroadcast(broadcast);
+
+        Intent aIntent = new Intent();
+        aIntent.putExtra("articleTitle", aTitle);
+        aIntent.putExtra("articleAuthor", aAuthor);
+        aIntent.putExtra("articleDate", aDate);
+        aIntent.putExtra("action", "add");
+        setResult(RESULT_OK, aIntent);
+
 
         clearDisplay();
         finish();
@@ -93,6 +120,8 @@ public class AddActivity extends Activity  {
         inputAuthor.setText("");
         inputDate.setText("");
     }
+
+
 
 
     @Override
@@ -114,5 +143,10 @@ public class AddActivity extends Activity  {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
 
 }
