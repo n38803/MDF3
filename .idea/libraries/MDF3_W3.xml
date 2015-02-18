@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="MDF3_W3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/S_Thompson_widget-revised.zip!/" />
+      <root url="jar://$PROJECT_DIR$/S_Thompson_widget.zip!/" />
+      <root url="jar://$PROJECT_DIR$/S_Thompson_fundamentals2.zip!/" />
+      <root url="jar://$PROJECT_DIR$/S_Thompson_fundamentals.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
